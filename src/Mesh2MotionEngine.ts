@@ -132,7 +132,7 @@ export class Mesh2MotionEngine {
     this.controls.target.set(0, 0.9, 0)
 
     // Set zoom limits to prevent excessive zooming in or out
-    this.controls.minDistance = 2 // Minimum zoom (closest to model)
+    this.controls.minDistance = 0.5 // Minimum zoom (closest to model)
     this.controls.maxDistance = 30 // Maximum zoom (farthest from model)
 
     this.controls.update()
