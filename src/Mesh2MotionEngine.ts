@@ -257,6 +257,7 @@ export class Mesh2MotionEngine {
     if (this.process_step === ProcessStep.LoadModel) {
       // reset the state in the case of coming back to this step
       this.remove_imported_model()
+      this.load_model_step.clear_loaded_model_data()
       this.load_model_step.begin()
     }
     else if (this.process_step === ProcessStep.LoadSkeleton) {
