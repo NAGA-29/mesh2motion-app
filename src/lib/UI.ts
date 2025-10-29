@@ -38,6 +38,11 @@ export class UI {
   dom_transform_type_radio_group: HTMLElement | null = null
   dom_transform_space_radio_group: HTMLElement | null = null
 
+  // preview plane controls
+  dom_preview_plane_checkbox: HTMLInputElement | null = null
+  dom_preview_plane_height_input: HTMLInputElement | null = null
+  dom_preview_plane_height_label: HTMLElement | null = null
+
   dom_skinning_algorithm_selection: HTMLElement | null = null
   dom_skinned_mesh_tools: HTMLElement | null = null
   dom_skinned_mesh_animation_tools: HTMLElement | null = null
@@ -68,7 +73,6 @@ export class UI {
   dom_export_button_hidden_link: HTMLElement | null = null
   dom_animation_count: HTMLElement | null = null
   dom_animations_listing_count: HTMLElement | null = null
-
 
   dom_build_version: HTMLElement | null = null
   dom_attribution_link: HTMLAnchorElement | null = null
@@ -117,6 +121,11 @@ export class UI {
 
     this.dom_transform_type_radio_group = document.querySelector('#transform-control-type-group')
     this.dom_transform_space_radio_group = document.querySelector('#transform-space-group')
+
+    // preview plane controls
+    this.dom_preview_plane_checkbox = document.querySelector('#preview-plane-checkbox')
+    this.dom_preview_plane_height_input = document.querySelector('#preview-plane-height-input')
+    this.dom_preview_plane_height_label = document.querySelector('#preview-plane-height-label')
 
     this.dom_bind_pose_button = document.querySelector('#action_bind_pose')
     // this.dom_scale_skeleton_input_box = document.querySelector('#scale-input')

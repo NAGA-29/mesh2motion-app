@@ -264,6 +264,22 @@
 
                 <hr />
 
+                    <!-- Preview plane controls -->
+                <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem;">
+                    <div class="styled-checkbox">
+                        <input type="checkbox" id="preview-plane-checkbox" />
+                        <label for="preview-plane-checkbox">Show Preview Plane</label>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <label for="preview-plane-height-input">Plane Height:</label>
+                        <input type="range" id="preview-plane-height-input" min="0.20" max="2.00" step="0.01" value="0.50" />
+                        <span id="preview-plane-height-label">0.50</span>
+                    </div>
+                </div>
+
+                <hr />
+
                 <!-- add number input for changing scale of skeleton-->
                 <!-- <div style="display: flex; flex-direction: row; justify-content: space-evenly; align-items: center; gap: 0.4rem;">
                     <input type="number" id="scale-input" name="scale-input" value="-3" min="-90" max="90" step="1.0">

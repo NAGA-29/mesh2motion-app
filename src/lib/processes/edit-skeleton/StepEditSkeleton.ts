@@ -2,8 +2,21 @@ import { UI } from '../../UI.ts'
 import { Generators } from '../../Generators.ts'
 import { Utility } from '../../Utilities.ts'
 import { UndoRedoSystem } from './UndoRedoSystem.ts'
-import { Vector3, Euler, Object3D, Skeleton, type Scene, type Bone, BufferGeometry, 
-  PointsMaterial, Points, Float32BufferAttribute, TextureLoader, type Camera } from 'three'
+import * as PreviewPlaneManager from './PreviewPlaneManager.ts'
+import {
+  Vector3,
+  Euler,
+  Object3D,
+  Skeleton,
+  type Scene,
+  type Bone,
+  BufferGeometry,
+  PointsMaterial,
+  Points,
+  Float32BufferAttribute,
+  TextureLoader,
+  type Camera
+} from 'three'
 import { SkinningFormula } from '../../enums/SkinningFormula.ts'
 
 /*
@@ -31,6 +44,10 @@ export class StepEditSkeleton extends EventTarget {
 
   private joint_hover_point: Object3D | null = null
   private _main_scene_ref: Scene | null = null
+
+  // Preview plane state
+  private preview_plane_visible: boolean = false
+  private preview_plane_height: number = 0.0
 
   private readonly joint_texture = new TextureLoader().load('images/skeleton-joint-point.png')
 
@@ -162,6 +179,50 @@ export class StepEditSkeleton extends EventTarget {
     return this.skinning_algorithm
   }
 
+  /**
+   * Toggle the visibility of the preview plane
+   * @param visible Whether the plane should be visible
+   */
+  public set_preview_plane_visible (visible: boolean): void {
+    this.preview_plane_visible = visible
+    
+    if (this._main_scene_ref === null) {
+      return
+    }
+
+    if (visible) {
+      PreviewPlaneManager.add_preview_plane(this._main_scene_ref, this.preview_plane_height)
+    } else {
+      PreviewPlaneManager.remove_preview_plane(this._main_scene_ref)
+    }
+  }
+
+  /**
+   * Get the current visibility state of the preview plane
+   */
+  public is_preview_plane_visible (): boolean {
+    return this.preview_plane_visible
+  }
+
+  /**
+   * Set the height of the preview plane
+   * @param height The Y coordinate height for the plane
+   */
+  public set_preview_plane_height (height: number): void {
+    this.preview_plane_height = height
+    
+    if (this._main_scene_ref !== null && this.preview_plane_visible) {
+      PreviewPlaneManager.update_preview_plane_height(this._main_scene_ref, height)
+    }
+  }
+
+  /**
+   * Get the current height of the preview plane
+   */
+  public get_preview_plane_height (): number {
+    return this.preview_plane_height
+  }
+
   public add_event_listeners (): void {
     if (this.ui.dom_move_to_origin_button !== null) {
       this.ui.dom_move_to_origin_button.addEventListener('click', () => {
@@ -214,6 +275,24 @@ export class StepEditSkeleton extends EventTarget {
     // Listen for undo/redo state changes to update button states
     this.undo_redo_system.addEventListener('undoRedoStateChanged', (event: any) => {
       this.update_undo_redo_button_states(event.detail.canUndo, event.detail.canRedo)
+    })
+
+    // Add preview plane event listeners
+    this.ui.dom_preview_plane_checkbox?.addEventListener('change', (event) => {
+      const target = event.target as HTMLInputElement
+      this.set_preview_plane_visible(target.checked)
+    })
+
+    this.ui.dom_preview_plane_height_input?.addEventListener('input', (event) => {
+      const target = event.target as HTMLInputElement
+      const height = parseFloat(target.value)
+      const final_height = isNaN(height) ? 0.0 : height
+      this.set_preview_plane_height(final_height)
+      
+      // Update the label to show current value
+      if (this.ui.dom_preview_plane_height_label !== null) {
+        this.ui.dom_preview_plane_height_label.textContent = final_height.toFixed(1)
+      }
     })
   }
 
@@ -273,11 +352,31 @@ export class StepEditSkeleton extends EventTarget {
     if (this.ui.dom_redo_button !== null) {
       this.ui.dom_redo_button.removeEventListener('click', () => {})
     }
+
+    // Remove preview plane event listeners
+    if (this.ui.dom_preview_plane_checkbox !== null) {
+      this.ui.dom_preview_plane_checkbox.removeEventListener('change', () => {})
+    }
+
+    if (this.ui.dom_preview_plane_height_input !== null) {
+      this.ui.dom_preview_plane_height_input.removeEventListener('input', () => {})
+    }
   }
 
   public cleanup_on_exit_step (): void {
     this.remove_event_listeners()
     this.clear_hover_point_if_exists()
+    this.remove_preview_plane()
+  }
+
+  /**
+   * Remove the preview plane from the scene
+   */
+  private remove_preview_plane (): void {
+    if (this._main_scene_ref !== null) {
+      PreviewPlaneManager.remove_preview_plane(this._main_scene_ref)
+      this.preview_plane_visible = false
+    }
   }
 
   /*
@@ -428,6 +527,4 @@ export class StepEditSkeleton extends EventTarget {
       this.joint_hover_point = null
     }
   }
-
-
 }
