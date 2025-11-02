@@ -4,6 +4,7 @@ import { TransformControls } from 'three/examples/jsm/controls/TransformControls
 import { CustomViewHelper } from './lib/CustomViewHelper.ts'
 
 import tippy from 'tippy.js'
+import './environment.js'
 import 'tippy.js/dist/tippy.css' // optional for styling
 
 import { Utility } from './lib/Utilities.ts'
