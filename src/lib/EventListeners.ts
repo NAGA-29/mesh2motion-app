@@ -2,6 +2,7 @@ import { type Mesh2MotionEngine } from '../Mesh2MotionEngine'
 import { ModelPreviewDisplay } from './enums/ModelPreviewDisplay'
 import { ProcessStep } from './enums/ProcessStep'
 import { TransformSpace } from './enums/TransformSpace'
+import { CameraType } from './enums/CameraType'
 import { Utility } from './Utilities'
 
 export class EventListeners {
@@ -195,6 +196,22 @@ export class EventListeners {
         this.bootstrap.changed_model_preview_display(ModelPreviewDisplay.WeightPainted)
       } else {
         console.warn(`Unknown mesh preview type selected: ${radio_button_selected}`)
+      }
+    })
+
+    // Camera type switching
+    this.bootstrap.ui.dom_camera_type_radio_group?.addEventListener('change', (event: Event) => {
+      const target = event.target as HTMLInputElement
+      const radio_button_selected: string | null = target?.value
+
+      if (radio_button_selected === null) {
+        console.warn('Null radio button selected for camera type change')
+        return
+      }
+
+      const camera_type = Utility.enum_from_value(radio_button_selected, CameraType)
+      if (camera_type !== undefined) {
+        this.bootstrap.switch_camera_type(camera_type)
       }
     })
 

@@ -32,11 +32,13 @@ import { TransformControlType } from './lib/enums/TransformControlType.ts'
 import { TransformSpace } from './lib/enums/TransformSpace.ts'
 import { ThemeManager } from './lib/ThemeManager.ts'
 import { ModalDialog } from './lib/ModalDialog.ts'
+import { CameraType } from './lib/enums/CameraType.ts'
 
 export class Mesh2MotionEngine {
-  public readonly camera = Generators.create_camera()
+  public camera: THREE.PerspectiveCamera | THREE.OrthographicCamera = Generators.create_camera()
   public readonly renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
   public controls: OrbitControls | undefined = undefined
+  public camera_type: CameraType = CameraType.Perspective
 
   public readonly transform_controls: TransformControls = new TransformControls(this.camera, this.renderer.domElement)
   public is_transform_controls_dragging: boolean = false
@@ -560,6 +562,85 @@ export class Mesh2MotionEngine {
     }
 
     return true
+  }
+
+  public switch_camera_type (camera_type: CameraType): void {
+    // Store current camera position and target
+    const current_position = this.camera.position.clone()
+    const current_target = this.controls?.target.clone() ?? new THREE.Vector3(0, 0.9, 0)
+    
+    // Calculate distance from camera to target for zoom level matching
+    const camera_distance = current_position.distanceTo(current_target)
+    
+    // Create new camera based on type
+    if (camera_type === CameraType.Perspective) {
+      this.camera = Generators.create_camera()
+      this.camera_type = CameraType.Perspective
+    } else {
+      // Create orthographic camera with frustum size based on current distance
+      // This formula helps match the apparent size between perspective and orthographic
+      const frustum_size = camera_distance * 0.3 // Adjust multiplier as needed for best match
+      const aspect = window.innerWidth / window.innerHeight
+      
+      this.camera = new THREE.OrthographicCamera(
+        -frustum_size * aspect / 2, // left
+        frustum_size * aspect / 2, // right
+        frustum_size / 2, // top
+        -frustum_size / 2, // bottom
+        0.1, // near
+        1000 // far
+      )
+      this.camera_type = CameraType.Orthographic
+    }
+    
+    // Restore position and target
+    this.camera.position.copy(current_position)
+    
+    // Update controls with new camera
+    if (this.controls !== undefined) {
+      this.controls.dispose()
+    }
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement)
+    this.controls.target.copy(current_target)
+    this.controls.minDistance = 0.5
+    this.controls.maxDistance = 30
+    
+    // For orthographic camera, handle zoom by adjusting frustum size instead of distance
+    if (this.camera_type === CameraType.Orthographic) {
+      this.controls.enableZoom = true
+      this.controls.addEventListener('change', () => {
+        if (this.camera instanceof THREE.OrthographicCamera) {
+          // Adjust frustum based on zoom level
+          const zoom_factor = this.controls?.object.position.distanceTo(this.controls.target) ?? 15
+          const frustum_size = zoom_factor * 0.3
+          const aspect = window.innerWidth / window.innerHeight
+          
+          this.camera.left = -frustum_size * aspect / 2
+          this.camera.right = frustum_size * aspect / 2
+          this.camera.top = frustum_size / 2
+          this.camera.bottom = -frustum_size / 2
+          this.camera.updateProjectionMatrix()
+        }
+      })
+    }
+    
+    this.controls.update()
+    
+    // Update transform controls with new camera
+    this.transform_controls.camera = this.camera
+    
+    // Update view helper with new camera
+    if (this.view_helper !== undefined) {
+      this.view_helper.dispose()
+      const view_control_hitbox = document.getElementById('view-control-hitbox')
+      if (view_control_hitbox !== null) {
+        this.view_helper = new CustomViewHelper(this.camera, view_control_hitbox)
+        this.view_helper.set_labels('X', 'Y', 'Z')
+      }
+    }
+    
+    // Update camera matrix and projection
+    this.camera.updateProjectionMatrix()
   }
 
   public show_contributors_dialog (): void {

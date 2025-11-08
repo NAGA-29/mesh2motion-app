@@ -584,6 +584,16 @@ input[type="file"] {
     left: 0;
 }
 
+#camera-toggle-container {
+    position: fixed;
+    top: 44px;
+    left: 5px;
+    z-index: 10;
+    border-radius: 8px;
+    padding: 0.75rem;
+}
+
+
 #animations-items .no-animations-message {
     padding: 0.5rem;
     font-style: italic;

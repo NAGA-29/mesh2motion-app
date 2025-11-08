@@ -37,6 +37,7 @@ export class UI {
   dom_selected_bone_label: HTMLElement | null = null
   dom_transform_type_radio_group: HTMLElement | null = null
   dom_transform_space_radio_group: HTMLElement | null = null
+  dom_camera_type_radio_group: HTMLElement | null = null
 
   // preview plane controls
   dom_use_head_weight_correction_container: HTMLElement | null = null
@@ -122,6 +123,7 @@ export class UI {
 
     this.dom_transform_type_radio_group = document.querySelector('#transform-control-type-group')
     this.dom_transform_space_radio_group = document.querySelector('#transform-space-group')
+    this.dom_camera_type_radio_group = document.querySelector('#camera-type-group')
 
     // preview plane controls
     this.dom_use_head_weight_correction_container = document.querySelector('#use-head-weight-correction-container')

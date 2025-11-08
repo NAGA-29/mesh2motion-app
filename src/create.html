@@ -391,6 +391,23 @@
     <!-- 3d view control hit box. It is just a container to help with 3d view controls. -->
     <div id="view-control-hitbox"></div>
 
+    <!-- Camera projection toggle -->
+    <div id="camera-toggle-container">
+        <fieldset>
+            <span>Camera Projection</span>
+            <div id="camera-type-group" class="toggle">
+                <input type="radio" name="camera-type" value="perspective" id="camera-perspective" checked="checked" />
+                <label for="camera-perspective">
+                    <span class="material-symbols-outlined"  data-tippy-content="Perspective" style="font-size: 20px;">photo_camera</span>
+                </label>
+                <input type="radio" name="camera-type" value="orthographic" id="camera-orthographic" />
+                <label for="camera-orthographic">
+                    <span class="material-symbols-outlined" data-tippy-content="Orthographic" style="font-size: 20px;">grid_view</span>
+                </label>
+            </div>
+        </fieldset>
+    </div>
+
     <!-- build version information-->
     <span id="build-version"></span>
 

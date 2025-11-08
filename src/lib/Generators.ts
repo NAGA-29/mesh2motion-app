@@ -1,5 +1,5 @@
 import {
-  PerspectiveCamera, DoubleSide, FrontSide, DirectionalLight, GridHelper,
+  PerspectiveCamera, OrthographicCamera, DoubleSide, FrontSide, DirectionalLight, GridHelper,
   Bone, MeshBasicMaterial, Skeleton, AmbientLight, PlaneGeometry, Mesh,
   SphereGeometry, MeshPhongMaterial, AxesHelper,
   Vector3, BufferGeometry, type Object3D, type WebGLRenderer,
@@ -187,6 +187,21 @@ export class Generators {
     return camera
   }
 
+  static create_orthographic_camera (): OrthographicCamera {
+    const frustum_size = 4 // Smaller frustum size for better zoom level match
+    const aspect = window.innerWidth / window.innerHeight
+    const camera = new OrthographicCamera(
+      -frustum_size * aspect / 2, // left
+      frustum_size * aspect / 2, // right
+      frustum_size / 2, // top
+      -frustum_size / 2, // bottom
+      0.1, // near
+      1000 // far
+    )
+    camera.position.set(0, 1.7, 15) // Same position as perspective camera
+    return camera
+  }
+
   static create_equidistant_spheres_around_circle (sphere_count = 6, color = 0x00ff00, distance = 0.3) {
     const plane_points: Mesh[] = []
     const plane_point_geometry = new SphereGeometry(0.03, 12, 12)
@@ -206,14 +221,26 @@ export class Generators {
     return plane_points
   }
 
-  static create_window_resize_listener (renderer: WebGLRenderer, camera: PerspectiveCamera): void {
+  static create_window_resize_listener (renderer: WebGLRenderer, camera: PerspectiveCamera | OrthographicCamera): void {
     // there was a bit of horizontal and vertical scrollbars
     // I tried doing overflow: none, but that wasn't working for some reason
     const contraction_size = 2
 
     window.addEventListener('resize', () => {
-      renderer.setSize(window.innerWidth-contraction_size, window.innerHeight-contraction_size)
-      camera.aspect = window.innerWidth / window.innerHeight
+      renderer.setSize(window.innerWidth - contraction_size, window.innerHeight - contraction_size)
+      
+      if (camera instanceof PerspectiveCamera) {
+        camera.aspect = window.innerWidth / window.innerHeight
+      } else if (camera instanceof OrthographicCamera) {
+        // Calculate current frustum size from existing camera bounds
+        const current_frustum_height = camera.top - camera.bottom
+        const aspect = window.innerWidth / window.innerHeight
+        camera.left = -current_frustum_height * aspect / 2
+        camera.right = current_frustum_height * aspect / 2
+        camera.top = current_frustum_height / 2
+        camera.bottom = -current_frustum_height / 2
+      }
+      
       camera.updateProjectionMatrix() // update camera
     })
   }
