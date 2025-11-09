@@ -37,6 +37,9 @@ export class StepAnimationsListing extends EventTarget {
 
   private _added_event_listeners: boolean = false
 
+  // enable status for mirroring animations
+  public mirror_animations_enabled: boolean = false
+
   // Animation search functionality
   public animation_search: AnimationSearch | null = null
 
@@ -310,6 +313,12 @@ export class StepAnimationsListing extends EventTarget {
 
       this.rebuild_warped_animations()
       this.play_animation(this.current_playing_index)
+    })
+
+    // check for changes to mirror animations checkbox
+    this.ui.dom_mirror_animations_checkbox?.addEventListener('change', (event) => {
+      const is_checked: boolean = this.ui.dom_mirror_animations_checkbox?.checked ?? false
+      this.mirror_animations_enabled = is_checked
     })
 
     // helps ensure we don't add event listeners multiple times
