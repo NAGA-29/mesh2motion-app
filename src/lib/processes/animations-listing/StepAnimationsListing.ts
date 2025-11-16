@@ -1,13 +1,12 @@
 import { UI } from '../../UI.ts'
 import { AnimationPlayer } from './AnimationPlayer.ts'
 
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-
 import {
-  type AnimationClip, AnimationMixer, type SkinnedMesh, type AnimationAction
+  type AnimationClip, AnimationMixer, type SkinnedMesh, type AnimationAction, Object3D
 } from 'three'
 
 import { AnimationUtility } from './AnimationUtility.ts'
+import { AnimationLoader, type AnimationLoadProgress } from './AnimationLoader.ts'
 
 import { SkeletonType } from '../../enums/SkeletonType.ts'
 import { Utility } from '../../Utilities.ts'
@@ -15,16 +14,15 @@ import { type ThemeManager } from '../../ThemeManager.ts'
 import { AnimationSearch } from './AnimationSearch.ts'
 import { type TransformedAnimationClipPair } from './interfaces/TransformedAnimationClipPair.ts'
 
-
 // Note: EventTarget is a built-ininterface and do not need to import it
 export class StepAnimationsListing extends EventTarget {
   private readonly theme_manager: ThemeManager
   private readonly ui: UI
   private readonly animation_player: AnimationPlayer
   private animation_clips_loaded: TransformedAnimationClipPair[] = []
-  private gltf_animation_loader: GLTFLoader = new GLTFLoader()
+  private readonly animation_loader: AnimationLoader = new AnimationLoader()
 
-  private animation_mixer: AnimationMixer = new AnimationMixer()
+  private animation_mixer: AnimationMixer = new AnimationMixer(new Object3D())
   private skinned_meshes_to_animate: SkinnedMesh[] = []
   private current_playing_index: number = 0
   private skeleton_type: SkeletonType = SkeletonType.Human
@@ -98,7 +96,7 @@ export class StepAnimationsListing extends EventTarget {
     // this will happen if we are reskinning the mesh after changes
     this.animation_clips_loaded = []
     this.skinned_meshes_to_animate = []
-    this.animation_mixer = new AnimationMixer()
+    this.animation_mixer = new AnimationMixer(new Object3D())
     this.current_playing_index = 0
     this.animation_player.clear_animation()
   }
@@ -115,7 +113,7 @@ export class StepAnimationsListing extends EventTarget {
   }
 
   /**
-   * Returns a list of all of the currently-displayed animation clips. 
+   * Returns a list of all of the currently-displayed animation clips.
    */
   public animation_clips (): AnimationClip[] {
     return this.animation_clips_loaded.map(clip => clip.display_animation_clip)
@@ -124,66 +122,24 @@ export class StepAnimationsListing extends EventTarget {
   public load_and_apply_default_animation_to_skinned_mesh (final_skinned_meshes: SkinnedMesh[]): void {
     this.skinned_meshes_to_animate = final_skinned_meshes
 
-    let animations_to_load_filepaths: string[] = []
-    switch (this.skeleton_type) {
-      case SkeletonType.Human:
-        animations_to_load_filepaths = [this.animations_file_path + 'human-base-animations.glb', 
-          this.animations_file_path + 'human-addon-animations.glb']
-        break
-      case SkeletonType.Quadraped:
-        animations_to_load_filepaths = [this.animations_file_path + 'quad-creature-animations.glb']
-        break
-      case SkeletonType.Bird:
-        animations_to_load_filepaths = [this.animations_file_path + 'bird-animations.glb']
-        break
-      case SkeletonType.Dragon:
-        animations_to_load_filepaths = [this.animations_file_path + 'dragon-animations.glb']
-        break
-      default:
-        console.error('Unknown skeleton type for loading animations. Add GLB file to animation listing process')
-    }
+    // Set the animations file path on the loader
+    this.animation_loader.set_animations_file_path(this.animations_file_path)
 
-    // if we call this load animations externally (like marketing page)
-    // we might need to modify the location paths for these to reference the correct part
-
-
-    this.gltf_animation_loader = new GLTFLoader()
-
-    // The GLTF loader doesn't return a promise, so we need some way
-    // to know when all the animations are loaded
-    let remaining_loads: number = animations_to_load_filepaths.length
-
-    this.animation_clips_loaded = [] // reset the animation clips loaded
+    // Reset the animation clips loaded
+    this.animation_clips_loaded = []
     // Create an animation mixer to do the playback. Play the first by default
-    this.animation_mixer = new AnimationMixer()
+    this.animation_mixer = new AnimationMixer(new Object3D())
 
-    animations_to_load_filepaths.forEach((filepath) => {
-      this.gltf_animation_loader.load(filepath, (gltf: any) => {
-        // load the animation clips into a new array
-        // then, remove the animation position keyframes. That will mess up the skinning
-        // process since we will be offsetting and moving the bone root positions
-        const cloned_anims: AnimationClip[] = AnimationUtility.deep_clone_animation_clips(gltf.animations)
-
-        // only keep position tracks
-        // this mutates the cloned_anims, so no need for returning anything
-        AnimationUtility.clean_track_data(cloned_anims, true)
-
-        // apply scaling to position keyframes if we scaled skeleton up or down
-        AnimationUtility.apply_skeleton_scale_to_position_keyframes(cloned_anims, this.skeleton_scale)
-
-        // we did all the processing needed, so add them
-        // to the full list of animation clips
-        this.animation_clips_loaded.push(...cloned_anims.map(clip => ({
-          original_animation_clip: clip,
-          display_animation_clip: AnimationUtility.deep_clone_animation_clip(clip)
-        })))
-
-        remaining_loads--
-        if (remaining_loads === 0) {
-          this.onAllAnimationsLoaded()
-        }
+    // Load animations using the new AnimationLoader
+    this.animation_loader.load_animations(this.skeleton_type, this.skeleton_scale)
+      .then((loaded_clips: TransformedAnimationClipPair[]) => {
+        this.animation_clips_loaded = loaded_clips
+        this.onAllAnimationsLoaded()
       })
-    })
+      .catch((error: Error) => {
+        console.error('Failed to load animations:', error)
+        // You could emit an error event here or show a user-friendly message
+      })
   }
 
   private onAllAnimationsLoaded (): void {
@@ -204,7 +160,9 @@ export class StepAnimationsListing extends EventTarget {
     // the amount of animations to export
     this.animation_search?.addEventListener('export-options-changed', () => {
       // update the count for the download button
-      this.ui.dom_animation_count.innerHTML = this.animation_search?.get_selected_animation_indices().length.toString() ?? '0'
+      if (this.ui.dom_animation_count != null) {
+        this.ui.dom_animation_count.innerHTML = this.animation_search?.get_selected_animation_indices().length.toString() ?? '0'
+      }
     })
 
     // add event listener to listen for filtered animations listing
@@ -216,12 +174,47 @@ export class StepAnimationsListing extends EventTarget {
     this.play_animation(0) // play the first animation by default
   }
 
-  private update_filtered_animation_listing_ui (): void {
-    const animation_length_string: string = this.animation_search?.filtered_animations().length.toString() ?? '0'
-    this.ui.dom_animations_listing_count.innerHTML = animation_length_string + ' animations'
+  private onAnimationLoadProgress (progress: AnimationLoadProgress): void {
+    // Enhanced progress logging with granular information
+    console.log(`Loading animations: ${progress.percentage}% (${progress.loaded}/${progress.total} files completed)`)
+
+    if (progress.currentFile !== '' && progress.currentFileTotal > 0) {
+      const file_name = progress.currentFile.split('/').pop() ?? progress.currentFile
+      console.log(`  Current file: ${file_name} - ${progress.currentFileProgress}%`)
+    }
+
+    if (progress.overallBytesTotal > 0) {
+      const mb_loaded = (progress.overallBytesLoaded / (1024 * 1024)).toFixed(1)
+      const mb_total = (progress.overallBytesTotal / (1024 * 1024)).toFixed(1)
+      console.log(`  Bytes: ${mb_loaded}MB / ${mb_total}MB`)
+    }
+
+    // TODO: Update UI progress bars if you have them
+    // You can add these DOM elements to your UI and uncomment these lines
+    /*
+    if (this.ui.dom_loading_progress_bar) {
+      this.ui.dom_loading_progress_bar.style.width = `${progress.percentage}%`
+      this.ui.dom_loading_progress_bar.textContent = `${progress.percentage}%`
+    }
+
+    if (this.ui.dom_current_file_progress_bar) {
+      this.ui.dom_current_file_progress_bar.style.width = `${progress.currentFileProgress}%`
+    }
+
+    if (this.ui.dom_loading_status_text && progress.currentFile !== '') {
+      const file_name = progress.currentFile.split('/').pop() ?? progress.currentFile
+      this.ui.dom_loading_status_text.textContent = `Loading ${file_name}...`
+    }
+    */
   }
 
- 
+  private update_filtered_animation_listing_ui (): void {
+    const animation_length_string: string = this.animation_search?.filtered_animations().length.toString() ?? '0'
+    if (this.ui.dom_animations_listing_count != null) {
+      this.ui.dom_animations_listing_count.innerHTML = animation_length_string + ' animations'
+    }
+  }
+
   /**
    * Rebuilds all of the warped animations by applying the specified warps.
    */
@@ -257,7 +250,7 @@ export class StepAnimationsListing extends EventTarget {
 
     // animation mixer has internal cache with animations. doing this helps clear it
     // otherwise modifications like arm extension will not update
-    this.animation_mixer = new AnimationMixer()
+    this.animation_mixer = new AnimationMixer(new Object3D())
 
     const all_animation_actions: AnimationAction[] = []
 
@@ -285,9 +278,11 @@ export class StepAnimationsListing extends EventTarget {
     // see if any of the "export" checkboxes are active. if not we need to disable the "Download" button
     const animation_checkboxes = this.get_animated_selected_elements()
     const is_any_checkbox_checked: boolean = Array.from(animation_checkboxes).some((checkbox) => {
-      return checkbox.checked === true
+      return (checkbox as HTMLInputElement).checked
     })
-    this.ui.dom_export_button.disabled = !is_any_checkbox_checked
+    if (this.ui.dom_export_button != null) {
+      this.ui.dom_export_button.disabled = !is_any_checkbox_checked
+    }
   }
 
   private add_event_listeners (): void {
@@ -299,14 +294,23 @@ export class StepAnimationsListing extends EventTarget {
       return
     }
 
+    // Add progress event for when animation GLB file is downloading for skeleton
+    this.animation_loader.addEventListener('progress', (event: Event) => {
+      const progress = (event as CustomEvent<AnimationLoadProgress>).detail
+      this.onAnimationLoadProgress(progress)
+    })
+
     // event listener for animation clip list with changing the current animation
     if (this.ui.dom_animation_clip_list != null) {
       this.ui.dom_animation_clip_list.addEventListener('click', (event) => {
         this.update_download_button_enabled()
 
-        if ((event.target != null) && event.target.tagName === 'BUTTON') {
-          const animation_index: number = event.target.getAttribute('data-index')
-          this.play_animation(animation_index)
+        if ((event.target != null) && (event.target as HTMLElement).tagName === 'BUTTON') {
+          const animation_index_str = (event.target as HTMLElement).getAttribute('data-index')
+          if (animation_index_str != null) {
+            const animation_index: number = Number(animation_index_str)
+            this.play_animation(animation_index)
+          }
         }
       })
     }
