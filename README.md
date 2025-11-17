@@ -44,12 +44,18 @@ There is separate tool in the web app where you can generate video previews for 
 ## Contributor Guide
 I am not an animator, so you will notice a lot of animations aren't very good. It is a good assumption that if the animation sucks, it is probably made by me. Feel free to help me and create better/new ones.
 
+## Licenses
+
+The code and platform are all licensed under the very permissive MIT license. The art assets (3d models, rigs, animations) are all licensed under CC0. I tried making everything as open as possible to remix, change, and build upon for the future.
+
 [Contributor Guide](CONTRIBUTOR.md)
 
-## Contribute to the animation fund
+## ❤️ Help the Project Grow
 I don't expect to be receiving money for working on this, but I am also not the best animator. If people want to see better, and more, animations made, add to the fund. I can pay for an animator to help build out the animation library better. Or, if you know an animator that wants to help with this, send them my way! I am just a dude working on this during nights and weekends.
 
-<img src="./venmo.png" alt="Venmo Animator Fund" width="400"/>
+Tip page to help out: https://support.mesh2motion.org/
+
+
 
 
 
