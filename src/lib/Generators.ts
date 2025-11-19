@@ -23,7 +23,7 @@ export class Generators {
     // Return a list of contributors
     return `
       <p>Scott Petrovic: Project Maintainer</p>
-      <p>Quaternius: Human model, rig, and animations. <a href="http://quaternius.com/" target="_blank" rel="noopener noreferrer">quaternius.com</a></p>
+      <p>Quaternius: Human model, rig, and animations. Visit <a href="http://quaternius.com/" target="_blank" rel="noopener noreferrer">quaternius.com</a></p>
       <hr/>
       <p>For instructions on submitting animations or contributing to the project, see the 
         <a href="https://github.com/scottpetrovic/mesh2motion-app/blob/main/CONTRIBUTOR.md" target="_blank">Contribution Guide</a>.
