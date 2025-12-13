@@ -1,5 +1,6 @@
 import { type Group, type Object3D, type Object3DEventMap, type Scene, type SkinnedMesh } from 'three'
 import { SkeletonType } from '../lib/enums/SkeletonType.ts'
+import { BoneAutoMapper } from './BoneAutoMapper.ts'
 
 export class StepBoneMapping extends EventTarget {
   private readonly _main_scene: Scene
@@ -11,6 +12,7 @@ export class StepBoneMapping extends EventTarget {
   private source_bones_list: HTMLDivElement | null = null
   private target_bones_list: HTMLDivElement | null = null
   private clear_mappings_button: HTMLButtonElement | null = null
+  private auto_map_button: HTMLButtonElement | null = null
 
   // Bone mapping: target bone name -> source bone name
   private bone_mapping: Map<string, string> = new Map()
@@ -28,6 +30,7 @@ export class StepBoneMapping extends EventTarget {
     this.source_bones_list = document.getElementById('source-bones-list') as HTMLDivElement
     this.target_bones_list = document.getElementById('target-bones-list') as HTMLDivElement
     this.clear_mappings_button = document.getElementById('clear-mappings-button') as HTMLButtonElement
+    this.auto_map_button = document.getElementById('auto-map-button') as HTMLButtonElement
 
     // Add event listener for clear mappings button
     this.clear_mappings_button?.addEventListener('click', () => {
@@ -35,15 +38,22 @@ export class StepBoneMapping extends EventTarget {
       console.log('All bone mappings cleared')
     })
 
+    // Add event listener for auto-map button
+    this.auto_map_button?.addEventListener('click', () => {
+      this.auto_map_bones()
+    })
+
     // Populate the lists
     this.update_bone_lists()
     this.update_clear_button_visibility()
+    this.update_auto_map_button_visibility()
   }
 
   public set_source_skeleton_data (skeleton_data: Group<Object3DEventMap>): void {
     this.source_skeleton_data = skeleton_data
     console.log('Source skeleton data set in bone mapping:', this.source_skeleton_data)
     this.update_source_bones_list()
+    this.update_auto_map_button_visibility()
   }
 
   public set_target_skeleton_data (armature: Object3D, skeleton_type: SkeletonType): void {
@@ -51,6 +61,7 @@ export class StepBoneMapping extends EventTarget {
     this.target_skeleton_type = skeleton_type
     console.log('Target skeleton data set in bone mapping:', this.target_armature, 'Type:', this.target_skeleton_type)
     this.update_target_bones_list()
+    this.update_auto_map_button_visibility()
   }
 
   public has_source_skeleton (): boolean {
@@ -276,6 +287,13 @@ export class StepBoneMapping extends EventTarget {
     this.clear_mappings_button.style.display = this.has_bone_mappings() ? 'block' : 'none'
   }
 
+  // Update visibility of auto-map button
+  private update_auto_map_button_visibility (): void {
+    if (this.auto_map_button === null) return
+
+    this.auto_map_button.style.display = this.has_both_skeletons() ? 'block' : 'none'
+  }
+
   // Clear a specific mapping
   public clear_bone_mapping (target_bone_name: string): void {
     this.bone_mapping.delete(target_bone_name)
@@ -287,6 +305,34 @@ export class StepBoneMapping extends EventTarget {
   // Clear all mappings
   public clear_all_bone_mappings (): void {
     this.bone_mapping.clear()
+    this.update_target_bones_list()
+    this.update_clear_button_visibility()
+    this.dispatchEvent(new CustomEvent('bone-mappings-changed'))
+  }
+
+  // Auto-map bones using string matching
+  public auto_map_bones (): void {
+    // Clear existing mappings first
+    this.bone_mapping.clear()
+
+    // Check if we have both source and target skeletons
+    if (!this.has_both_skeletons()) {
+      console.warn('Cannot auto-map: both source and target skeletons are required')
+      return
+    }
+
+    const source_bone_names = this.get_source_bone_names()
+    const target_bone_names = this.get_target_bone_names()
+
+    // Use BoneAutoMapper to generate mappings
+    const auto_mappings = BoneAutoMapper.auto_map_bones(source_bone_names, target_bone_names)
+
+    // Apply the auto-generated mappings
+    this.bone_mapping = auto_mappings
+
+    console.log(`Auto-mapped ${auto_mappings.size} bones:`, auto_mappings)
+
+    // Update UI
     this.update_target_bones_list()
     this.update_clear_button_visibility()
     this.dispatchEvent(new CustomEvent('bone-mappings-changed'))
