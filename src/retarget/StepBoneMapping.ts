@@ -226,6 +226,17 @@ export class StepBoneMapping extends EventTarget {
         
         bone_item.appendChild(source_name_span)
         bone_item.appendChild(target_name_span)
+
+        // Add remove button for the mapping
+        const remove_button = document.createElement('button')
+        remove_button.textContent = '✕'
+        remove_button.className = 'remove-mapping-button secondary-button'
+        remove_button.title = 'Remove this mapping'
+        remove_button.addEventListener('click', (event) => {
+          event.stopPropagation()
+          this.clear_bone_mapping(name)
+        })
+        bone_item.appendChild(remove_button)
       } else {
         bone_item.textContent = name
       }
