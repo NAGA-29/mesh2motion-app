@@ -73,9 +73,14 @@
                 <div class="bone-map-section">
                     <p class="bone-map-heading">Your 3D Rig Model (Target)</p>
                     <div class="bone-map-content">
-                        <!-- there are some issues going on with scaling the skeleton for FBX and other formats so we will start simple for now with just GLB files -->
-                        <input type="file" id="upload-file" accept=".glb, .fbx, .zip" style="display: none;" />
-                        <label for="upload-file" class="button" id="load-model-button">Upload GLB</label>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <!-- there are some issues going on with scaling the skeleton for FBX and other formats so we will start simple for now with just GLB files -->
+                            <input type="file" id="upload-file" accept=".glb, .fbx, .zip" style="display: none;" />
+                            <label for="upload-file" class="button" id="load-model-button">Upload Rig</label>
+
+                            <button id="auto-map-button" class="secondary-button" style="display: none;">Auto-Map Bones</button>
+                            <button id="clear-mappings-button" class="secondary-button" style="display: none;">Clear Mappings</button>
+                        </div>
                         
                         <p>Bones List  <span id="target-bone-count">(0)</span></p>
                         <div id="target-bones-list">
@@ -85,11 +90,7 @@
 
                 </div>
             </div>
-            
-            <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-                <button id="auto-map-button" class="button" style="display: none;">Auto-Map Bones</button>
-                <button id="clear-mappings-button" class="button" style="display: none;">Clear All Mappings</button>
-            </div>
+
         </div>
 
         <!-- 3d view controls shown on bottom right. This helps with click events -->
