@@ -1,4 +1,4 @@
-import { type Group, type Object3DEventMap, type Skeleton, type SkinnedMesh } from 'three'
+import { Scene, type Group, type Object3DEventMap, type Skeleton, type SkinnedMesh } from 'three'
 import { ModalDialog } from '../lib/ModalDialog.ts'
 import { SkeletonType } from '../lib/enums/SkeletonType.ts'
 
@@ -7,7 +7,7 @@ export class RetargetUtils {
   /**
    * Resets all SkinnedMeshes in the group to their rest pose
    */
-  static reset_skinned_mesh_to_rest_pose (skinned_meshes_group: Group<Object3DEventMap>): void {
+  static reset_skinned_mesh_to_rest_pose (skinned_meshes_group: Scene): void {
     skinned_meshes_group.traverse((child) => {
       if (child.type === 'SkinnedMesh') {
         const skinned_mesh = child as SkinnedMesh
@@ -22,23 +22,22 @@ export class RetargetUtils {
    * Validates that the retargetable model contains SkinnedMeshes with bones
    * @returns true if valid SkinnedMeshes are found, false otherwise
    */
-  static validate_skinned_mesh_has_bones (retargetable_model: Group<Object3DEventMap>): boolean {
+  static validate_skinned_mesh_has_bones (retargetable_model: Scene): boolean {
     // Collect all SkinnedMeshes
-    const skinned_meshes: SkinnedMesh[] = []
+    let has_skinned_mesh_with_bones = false
     retargetable_model.traverse((child) => {
       if (child.type === 'SkinnedMesh') {
-        const skinned_mesh = child as SkinnedMesh
-        skinned_meshes.push(skinned_mesh)
+        has_skinned_mesh_with_bones = true
       }
     })
 
     // Check if we have any SkinnedMeshes
-    if (skinned_meshes.length === 0) {
+    if (!has_skinned_mesh_with_bones) {
       new ModalDialog('No SkinnedMeshes found in file', 'Error opening file').show()
       return false
     }
 
-    console.log('skinned meshes found. ready to start retargeting process:', skinned_meshes)
+    console.log('skinned meshes found. ready to start retargeting process:', has_skinned_mesh_with_bones)
     return true
   }
 
