@@ -1,5 +1,5 @@
 import { Mesh2MotionEngine } from '../Mesh2MotionEngine.ts'
-import { type Group, type Object3DEventMap, Vector3 } from 'three'
+import { type Group, type Object3DEventMap, Scene, Vector3 } from 'three'
 import { StepLoadSourceSkeleton } from './steps/StepLoadSourceSkeleton.ts'
 import { StepLoadTargetModel } from './steps/StepLoadTargetModel.ts'
 import { StepBoneMapping } from './steps/StepBoneMapping.ts'
@@ -14,7 +14,6 @@ class RetargetModule {
   private readonly retarget_animation_preview: RetargetAnimationPreview
   private animation_listing_step: RetargetAnimationListing | null = null
 
-  private continue_button: HTMLButtonElement | null
   private back_to_bone_map_button: HTMLButtonElement | null = null
 
   constructor () {
@@ -43,9 +42,6 @@ class RetargetModule {
       this.mesh2motion_engine.get_scene(),
       this.step_bone_mapping
     )
-
-    // Set up animation loop for preview updates
-    this.setup_animation_loop()
   }
 
   public init (): void {
@@ -61,6 +57,7 @@ class RetargetModule {
     this.back_to_bone_map_button = document.getElementById('back_to_bone_map_button') as HTMLButtonElement
     const bone_mapping_step = document.getElementById('bone-mapping-step')
     const animation_export_options = document.getElementById('skinned-step-animation-export-options')
+    const continue_button = document.getElementById('continue-to-listing-button') as HTMLButtonElement
 
     this.back_to_bone_map_button.onclick = () => {
       // Hide the skinned-step-animation-export-options ID and show the bone-mapping-step ID
@@ -68,6 +65,11 @@ class RetargetModule {
         animation_export_options.style.display = 'none'
         bone_mapping_step.style.display = 'inline'
       }
+
+      // TODO: stop the animation listing step
+
+      // start the live preview again
+      this.start_live_preview()
     }
 
     // Listen for source skeleton (Mesh2Motion) loaded
@@ -75,71 +77,53 @@ class RetargetModule {
       const source_armature = this.step_load_source_skeleton.get_loaded_source_armature()
       const skeleton_type = this.step_load_source_skeleton.get_skeleton_type()
       this.step_bone_mapping.set_source_skeleton_data(source_armature, skeleton_type)
-      this.try_start_preview()
+      this.start_live_preview()
     })
 
     // Listen for target model (user-uploaded) loaded
-    this.step_load_target_model.addEventListener('target-model-loaded', (event: Event) => {
-      const custom_event = event as CustomEvent
-      const retargetable_meshes = custom_event.detail.retargetable_meshes as Group<Object3DEventMap>
+    this.step_load_target_model.addEventListener('target-model-loaded', (_event: Event) => {
+      const retargetable_meshes: Scene | null = this.step_load_target_model.get_retargetable_meshes()
 
       // Set target skeleton data in bone mapping (uploaded mesh)
       this.step_bone_mapping.set_target_skeleton_data(retargetable_meshes)
-      this.try_start_preview()
+      this.start_live_preview()
 
       // Show "Continue" button to proceed to animation listing
-      this.continue_button = document.getElementById('continue-to-listing-button') as HTMLButtonElement
-      this.continue_button.style.display = 'block'
-
-      // move this continue onclick to the normal add event listener area to prevent multiple bindings
-      this.continue_button.onclick = () => {
-        // Hide the bone-mapping-step ID and show the skinned-step-animation-export-options ID
-        if (bone_mapping_step !== null && animation_export_options !== null) {
-          bone_mapping_step.style.display = 'none'
-          animation_export_options.style.display = 'inline'
-        }
-
-        // load the animation listing step
-        this.animation_listing_step = new RetargetAnimationListing(
-          this.mesh2motion_engine.get_theme_manager(),
-          this.step_bone_mapping
-        )
-        this.animation_listing_step.begin(this.step_load_source_skeleton.get_skeleton_type())
-        this.animation_listing_step.load_and_apply_default_animation_to_skinned_mesh(retargetable_meshes)
-      }
+      continue_button.style.display = 'block'
     })
+
+    // next button to go to the animation listing step
+    continue_button.onclick = () => {
+      // Hide the bone-mapping-step ID and show the skinned-step-animation-export-options ID
+      if (bone_mapping_step !== null && animation_export_options !== null) {
+        bone_mapping_step.style.display = 'none'
+        animation_export_options.style.display = 'inline'
+      }
+
+      // stop the live preview step from playing its animation
+      this.retarget_animation_preview.stop_preview()
+
+      // load the animation listing step and start it
+      this.animation_listing_step = new RetargetAnimationListing(
+        this.mesh2motion_engine.get_theme_manager(),
+        this.step_bone_mapping
+      )
+      this.animation_listing_step.begin(this.step_load_source_skeleton.get_skeleton_type())
+
+      const retargetable_meshes: Scene | null = this.step_load_target_model.get_retargetable_meshes()
+      this.animation_listing_step.load_and_apply_default_animation_to_skinned_mesh(retargetable_meshes)
+    }
   }
 
-  private try_start_preview (): void {
+  private start_live_preview (): void {
     // Start preview when both skeletons are loaded
     if (this.step_bone_mapping.has_both_skeletons()) {
       console.log('Both skeletons loaded, starting animation preview...')
+
       this.retarget_animation_preview.start_preview().catch((error) => {
         console.error('Failed to start preview:', error)
       })
     }
-  }
-
-  private setup_animation_loop (): void {
-    let last_time = performance.now()
-
-    const animate = (): void => {
-      requestAnimationFrame(animate)
-
-      const current_time = performance.now()
-      const delta_time = (current_time - last_time) / 1000 // Convert to seconds
-      last_time = current_time
-
-      // Update animation preview
-      this.retarget_animation_preview.update(delta_time)
-
-      // Update animation listing if it exists
-      if (this.animation_listing_step !== null) {
-        this.animation_listing_step.frame_change(delta_time)
-      }
-    }
-
-    animate()
   }
 }
 

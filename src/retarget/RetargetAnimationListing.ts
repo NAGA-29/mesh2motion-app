@@ -1,7 +1,7 @@
 import { AnimationPlayer } from '../lib/processes/animations-listing/AnimationPlayer.ts'
 import { AnimationSearch } from '../lib/processes/animations-listing/AnimationSearch.ts'
 import { AnimationLoader } from '../lib/processes/animations-listing/AnimationLoader.ts'
-import { type AnimationClip, AnimationMixer, type SkinnedMesh, Object3D, type Object3DEventMap, type Group } from 'three'
+import { type AnimationClip, AnimationMixer, type SkinnedMesh, Object3D, type Object3DEventMap, type Group, Scene } from 'three'
 import { SkeletonType } from '../lib/enums/SkeletonType.ts'
 import type { ThemeManager } from '../lib/ThemeManager.ts'
 import { type TransformedAnimationClipPair } from '../lib/processes/animations-listing/interfaces/TransformedAnimationClipPair.ts'
@@ -65,9 +65,9 @@ export class RetargetAnimationListing extends EventTarget {
     return this.animation_clips_loaded.map(clip => clip.display_animation_clip)
   }
 
-  public load_and_apply_default_animation_to_skinned_mesh (retarget_meshes: Group<Object3DEventMap>): void {
+  public load_and_apply_default_animation_to_skinned_mesh (retarget_meshes: Scene): void {
     // load the Group skinned mesh and convert to normal SkinnedMesh array
-    this.skinned_meshes_to_animate = retarget_meshes.children.filter((child) => {
+    this.skinned_meshes_to_animate = retarget_meshes.children.filter((child: Object3D) => {
       return (child as SkinnedMesh).isSkinnedMesh
     }) as SkinnedMesh[]
 

@@ -83,7 +83,7 @@ export class StepBoneMapping extends EventTarget {
     this.update_auto_map_button_visibility()
   }
 
-  public set_target_skeleton_data (skeleton_data: Scene): void {
+  public set_target_skeleton_data (skeleton_data: Scene | null): void {
     this.target_skeleton_data = skeleton_data
     console.log('Target skeleton data set in bone mapping:', this.target_skeleton_data)
     this.update_target_bones_list()

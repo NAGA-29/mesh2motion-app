@@ -41,12 +41,23 @@ export class RetargetAnimationPreview extends EventTarget {
       console.log('Bone mappings changed, updating preview animation...')
       this.update_preview_animation()
     })
+
+    this.setup_animation_loop()
   }
 
   /**
    * Start the preview system by loading the first available animation
    */
   public async start_preview (): Promise<void> {
+    this.is_preview_active = true
+
+    // we have already loaded an animation and retargeted it, just play it again
+    // this will happen when going back to bone mapping step from animation listing step
+    if (this.retargeted_animation_clip !== null) {
+      this.play_default_animation()
+      return
+    }
+
     if (!this.step_bone_mapping.has_both_skeletons()) {
       console.log('Cannot start preview: both skeletons are required')
       return
@@ -79,7 +90,6 @@ export class RetargetAnimationPreview extends EventTarget {
     // Load the first animation based on skeleton type
     await this.load_first_animation()
 
-    this.is_preview_active = true
     console.log('Preview started successfully')
   }
 
@@ -109,6 +119,12 @@ export class RetargetAnimationPreview extends EventTarget {
     if (animation_file_path === null) {
       console.log('No animation file found for skeleton type:', source_skeleton_type)
       return
+    }
+
+    // if we are coming back to this step and already loaded a default animation, skip reloading
+    // and just do the playing
+    if (this.current_animation_clip !== null) {
+    
     }
 
     try {
@@ -174,27 +190,51 @@ export class RetargetAnimationPreview extends EventTarget {
       this.target_skinned_meshes
     )
 
-    // Apply the retargeted animation to all target skinned meshes
-    this.target_skinned_meshes.forEach((skinned_mesh) => {
-      if (this.animation_mixer !== null && this.retargeted_animation_clip !== null) {
-        const action: AnimationAction = this.animation_mixer.clipAction(this.retargeted_animation_clip, skinned_mesh)
-        action.reset()
-        action.play() // should loop automatically
-      }
-    })
-
-    console.log('Preview animation updated and playing')
+    this.play_default_animation()
   }
 
-  /**
-   * Update animation mixer on each frame
-   */
-  public update (delta_time: number): void {
-    if (this.animation_mixer === null || !this.is_preview_active) {
+  private play_default_animation (): void {
+    if (this.retargeted_animation_clip === null) {
+      console.error('retargeting animation clip is null while playing default animation.')
       return
     }
 
+    if (this.animation_mixer === null) {
+      console.error('Animation mixer is null while playing default animation.')
+      return
+    }
+
+    // Apply the retargeted animation to all target skinned meshes
+    this.target_skinned_meshes.forEach((skinned_mesh) => {
+      const action: AnimationAction = this.animation_mixer.clipAction(this.retargeted_animation_clip, skinned_mesh)
+      action.reset()
+      action.play() // should loop automatically
+    })
+  }
+
+  private setup_animation_loop (): void {
+    let last_time = performance.now()
+    const animate = (): void => {
+      requestAnimationFrame(animate)
+
+      // calculate delta time and pass it into preview
+      const current_time = performance.now()
+      const delta_time = (current_time - last_time) / 1000 // Convert to seconds
+      last_time = current_time
+
+      if (this.is_preview_active) {
+        this.animation_frame_logic(delta_time)
+      }
+    }
+    animate()
+  }
+
+  private animation_frame_logic (delta_time: number): void {
+    if (this.animation_mixer === null) return
+
     this.animation_mixer.update(delta_time)
+
+    console.log('Animation preview loop playing!!')
 
     // CRITICAL: Update the skeleton and skinned meshes after animation changes the bones
     // Why do I need this when I don't need it in the main Mesh2Motion engine?

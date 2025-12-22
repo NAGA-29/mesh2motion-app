@@ -11,6 +11,8 @@ export class StepLoadTargetModel extends EventTarget {
   private file_input: HTMLInputElement | null = null
   private load_model_button: HTMLLabelElement | null = null
 
+  private retargetable_meshes: Scene | null = null
+
   constructor (mesh2motion_engine: Mesh2MotionEngine) {
     super()
     this.mesh2motion_engine = mesh2motion_engine
@@ -18,6 +20,10 @@ export class StepLoadTargetModel extends EventTarget {
 
   public begin (): void {
     this.add_event_listeners()
+  }
+
+  public get_retargetable_meshes (): Scene | null {
+    return this.retargetable_meshes
   }
 
   private add_event_listeners (): void {
@@ -101,8 +107,9 @@ export class StepLoadTargetModel extends EventTarget {
             // Add skeleton helper
             this.add_skeleton_helper(retargetable_meshes)
 
-            // Dispatch event with loaded model data
-            this.dispatch_target_model_loaded(retargetable_meshes)
+            // Save the final retargetable meshes and dispatch event
+            this.retargetable_meshes = retargetable_meshes
+            this.dispatchEvent(new CustomEvent('target-model-loaded'))
           }
         }, { once: true })
       } catch (error) {
@@ -210,11 +217,5 @@ export class StepLoadTargetModel extends EventTarget {
       camera_distance,
       camera_position
     })
-  }
-
-  private dispatch_target_model_loaded (retargetable_meshes: Scene): void {
-    this.dispatchEvent(new CustomEvent('target-model-loaded', {
-      detail: { retargetable_meshes }
-    }))
   }
 }
