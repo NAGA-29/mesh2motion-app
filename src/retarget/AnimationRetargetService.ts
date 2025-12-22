@@ -3,6 +3,14 @@ import { RetargetUtils } from './RetargetUtils.ts'
 import { TargetBoneMappingType } from './steps/StepBoneMapping.ts'
 
 /**
+ * Parsed animation track name containing bone name and property type
+ */
+export interface TrackNameParts {
+  bone_name: string
+  property: string
+}
+
+/**
  * AnimationRetargetService - Shared service for retargeting animations from one skeleton to another
  * Used by both RetargetAnimationPreview and RetargetAnimationListing
  */
@@ -44,32 +52,30 @@ export class AnimationRetargetService {
     source_clip.tracks.forEach((track) => {
       // Parse the track name to get the bone name and property
       // Track names are typically in format: "boneName.property" or ".bones[boneName].property"
-      const track_name_parts = this.parse_track_name(track.name)
-      if (track_name_parts === null) {
+      const track_parts: TrackNameParts | null = this.parse_track_name_for_metadata(track.name)
+      if (track_parts === null) {
         return
       }
 
-      const { bone_name, property } = track_name_parts
-
       // Check if this bone is mapped to any target bones
-      const target_bone_names = reverse_mappings.get(bone_name)
+      const target_bone_names = reverse_mappings.get(track_parts.bone_name)
       if (target_bone_names === undefined || target_bone_names.length === 0) {
         return // Skip unmapped bones
       }
 
       // Create a track for each target bone this source bone maps to
       target_bone_names.forEach((target_bone_name) => {
-        const new_track_name = RetargetUtils.create_track_name(target_bone_name, property)
+        const new_track_name = RetargetUtils.create_track_name(target_bone_name, track_parts.property)
 
         // Clone the track with the new name
-        if (property === 'quaternion') {
+        if (track_parts.property === 'quaternion') {
           const new_track = new QuaternionKeyframeTrack(
             new_track_name,
             track.times.slice(),
             track.values.slice()
           )
           new_tracks.push(new_track)
-        } else if (property === 'position' || property === 'scale') {
+        } else if (track_parts.property === 'position' || track_parts.property === 'scale') {
           const new_track = new VectorKeyframeTrack(
             new_track_name,
             track.times.slice(),
@@ -201,7 +207,7 @@ export class AnimationRetargetService {
     const rotation_amount: Quaternion = new Quaternion().setFromEuler(rotate_obj)
 
     for (const track of tracks_to_change) {
-      const name_info = this.parse_track_name(track.name)
+      const name_info = this.parse_track_name_for_metadata(track.name)
       if (name_info === null) continue
 
       const values = track.values
@@ -255,10 +261,10 @@ export class AnimationRetargetService {
   }
 
   /**
-   * Parse a track name to extract bone name and property
+   * Parse a track name to extract bone name and property (e.g., "quaternion", "position", "scale")
    * Handles various formats like "boneName.property" or ".bones[boneName].property"
    */
-  private static parse_track_name (track_name: string): { bone_name: string, property: string } | null {
+  private static parse_track_name_for_metadata (track_name: string): TrackNameParts | null {
     // Try format: "boneName.property"
     const simple_match = track_name.match(/^([^.]+)\.(.+)$/)
     if (simple_match !== null) {
