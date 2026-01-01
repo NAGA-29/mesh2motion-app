@@ -107,6 +107,7 @@ export class StepLoadModel extends EventTarget {
 - camelCase for private methods
 - Getter pattern: `get_property_name()` returns data
 - Setter pattern: `set_property_name(value)`
+- Function definitions ALWAYS have spaces after function name parentheses: `function_name (args)`
 
 ### Classes
 - PascalCase: `StepLoadModel`, `CustomFBXLoader`, `ModalDialog`

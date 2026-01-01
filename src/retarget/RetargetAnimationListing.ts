@@ -208,7 +208,7 @@ export class RetargetAnimationListing extends EventTarget {
     }
 
     // Retarget the animation using the shared service
-    const retargeted_clip: AnimationClip = AnimationRetargetService.retarget_animation_clip(
+    const retargeted_clip: AnimationClip = AnimationRetargetService.getInstance().retarget_animation_clip(
       display_clip,
       bone_mappings,
       this.step_bone_mapping.get_target_mapping_template(),

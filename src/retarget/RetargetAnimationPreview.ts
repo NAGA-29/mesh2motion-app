@@ -181,7 +181,7 @@ export class RetargetAnimationPreview extends EventTarget {
     }
 
     // Create retargeted animation clip using shared service
-    this.retargeted_animation_clip = AnimationRetargetService.retarget_animation_clip(
+    this.retargeted_animation_clip = AnimationRetargetService.getInstance().retarget_animation_clip(
       this.current_animation_clip,
       bone_mappings,
       this.step_bone_mapping.get_target_mapping_template(),

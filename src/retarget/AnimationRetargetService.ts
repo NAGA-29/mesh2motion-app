@@ -10,12 +10,19 @@ export interface TrackNameParts {
   property: string
 }
 
-/**
- * AnimationRetargetService - Shared service for retargeting animations from one skeleton to another
- * Used by both RetargetAnimationPreview and RetargetAnimationListing
- */
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
+// AnimationRetargetService - Shared service for retargeting animations from one skeleton to another
+// Used by both RetargetAnimationPreview and RetargetAnimationListing
 export class AnimationRetargetService {
+  private static instance: AnimationRetargetService | null = null
+
+  private constructor () {}
+
+  public static getInstance (): AnimationRetargetService {
+    if (AnimationRetargetService.instance === null) {
+      AnimationRetargetService.instance = new AnimationRetargetService()
+    }
+    return AnimationRetargetService.instance
+  }
   /**
    * Retarget an animation clip using bone mappings
    * @param source_clip - The original animation clip from the source skeleton
@@ -26,7 +33,8 @@ export class AnimationRetargetService {
    * @param target_skinned_meshes - The target skinned meshes (for finding bones)
    * @returns A new animation clip retargeted for the target skeleton
    */
-  static retarget_animation_clip (
+
+  public retarget_animation_clip (
     source_clip: AnimationClip,
     bone_mappings: Map<string, string>,
     target_mapping_type: TargetBoneMappingType,
@@ -89,7 +97,7 @@ export class AnimationRetargetService {
   /**
    * Create a reverse mapping: source bone name -> array of target bone names
    */
-  private static reverse_bone_mapping (bone_mappings: Map<string, string>): Map<string, string[]> {
+  private reverse_bone_mapping (bone_mappings: Map<string, string>): Map<string, string[]> {
     const reverse_mappings = new Map<string, string[]>()
     bone_mappings.forEach((source_bone_name, target_bone_name) => {
       if (!reverse_mappings.has(source_bone_name)) {
@@ -106,7 +114,7 @@ export class AnimationRetargetService {
   /**
    * Apply bone rotation correction for fixing bone roll delta between target and source skeleton
    */
-  private static apply_bone_rotation_correction (
+  private apply_bone_rotation_correction (
     animation_clip: AnimationClip,
     bone_mappings: Map<string, string>,
     source_armature: Group | null,
@@ -125,7 +133,7 @@ export class AnimationRetargetService {
       if (delta !== null) {
         const delta_euler = new Euler().setFromQuaternion(delta)
 
-        this.rotate_bone_for_retargeting(animation_clip, [target_bone_name], delta_euler)
+        AnimationRetargetService.rotate_bone_for_retargeting(animation_clip, [target_bone_name], delta_euler)
       } else {
         console.log(`Warning: delta is NULL when fixing bone roll. Skipping correction for bone: ${target_bone_name}`)
       }
@@ -144,7 +152,7 @@ export class AnimationRetargetService {
    * @param target_skinned_meshes - The target skinned meshes
    * @returns The rotation difference as a quaternion (Y-axis only), or null if bones not found
    */
-  private static calculate_bone_rotation_delta (
+  private calculate_bone_rotation_delta (
     source_bone_name: string,
     target_bone_name: string,
     source_armature: Group | null,
@@ -202,7 +210,7 @@ export class AnimationRetargetService {
     const rotation_amount: Quaternion = new Quaternion().setFromEuler(rotate_obj)
 
     for (const track of tracks_to_change) {
-      const name_info = this.parse_track_name_for_metadata(track.name)
+      const name_info = AnimationRetargetService.getInstance().parse_track_name_for_metadata(track.name)
       if (name_info === null) continue
 
       const values = track.values
@@ -228,7 +236,7 @@ export class AnimationRetargetService {
   /**
    * Find a bone by name in the skeleton hierarchy
    */
-  private static find_bone_by_name (
+  private find_bone_by_name (
     root: Object3D,
     skinned_meshes: SkinnedMesh[],
     bone_name: string
@@ -259,7 +267,7 @@ export class AnimationRetargetService {
    * Parse a track name to extract bone name and property (e.g., "quaternion", "position", "scale")
    * Handles various formats like "boneName.property" or ".bones[boneName].property"
    */
-  private static parse_track_name_for_metadata (track_name: string): TrackNameParts | null {
+  private parse_track_name_for_metadata (track_name: string): TrackNameParts | null {
     // Try format: "boneName.property"
     const simple_match = track_name.match(/^([^.]+)\.(.+)$/)
     if (simple_match !== null) {
