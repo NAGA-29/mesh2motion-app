@@ -4,23 +4,23 @@ export class HumanChainConfig {
   // Master list of human bone/joint names that we can use and part of the Mesh2Motion rig
   // this will always be the source config we start with for retargeting
   public static readonly mesh2motion_config: Record<string, string[]> = {
-    pelvis: ['DEF-hips'],
-    spine: ['DEF-spine001', 'DEF-spine002', 'DEF-spine003'],
-    head: ['DEF-neck', 'DEF-head'],
-    armL: ['DEF-upper_armL', 'DEF-forearmL', 'DEF-handL'],
-    armR: ['DEF-upper_armR', 'DEF-forearmR', 'DEF-handR'],
-    legL: ['DEF-thighL', 'DEF-shinL', 'DEF-footL'],
-    legR: ['DEF-thighR', 'DEF-shinR', 'DEF-footR'],
-    fingersThumbL: ['DEF-thumb01L', 'DEF-thumb02L', 'DEF-thumb03L', 'DEF-thumb04_tipL'],
-    fingersThumbR: ['DEF-thumb01R', 'DEF-thumb02R', 'DEF-thumb03R', 'DEF-thumb04_tipR'],
-    fingersIndexL: ['DEF-f_index01L', 'DEF-f_index02L', 'DEF-f_index03L', 'DEF-f_index04_tipL'],
-    fingersIndexR: ['DEF-f_index01R', 'DEF-f_index02R', 'DEF-f_index03R', 'DEF-f_index04_tipR'],
-    fingersMiddleL: ['DEF-f_middle01L', 'DEF-f_middle02L', 'DEF-f_middle03L', 'DEF-f_middle04_tipL'],
-    fingersMiddleR: ['DEF-f_middle01R', 'DEF-f_middle02R', 'DEF-f_middle03R', 'DEF-f_middle04_tipR'],
-    fingersRingL: ['DEF-f_ring01L', 'DEF-f_ring02L', 'DEF-f_ring03L', 'DEF-f_ring04_tipL'],
-    fingersRingR: ['DEF-f_ring01R', 'DEF-f_ring02R', 'DEF-f_ring03R', 'DEF-f_ring04_tipR'],
-    fingersPinkyL: ['DEF-f_pinky01L', 'DEF-f_pinky02L', 'DEF-f_pinky03L', 'DEF-f_pinky04_tipL'],
-    fingersPinkyR: ['DEF-f_pinky01R', 'DEF-f_pinky02R', 'DEF-f_pinky03R', 'DEF-f_pinky04_tipR']
+    pelvis: ['pelvis'],
+    spine: ['spine_01', 'spine_02', 'spine_03'],
+    head: ['neck_01', 'head'],
+    armL: ['upperarm_l', 'lowerarm_l', 'hand_l'],
+    armR: ['upperarm_r', 'lowerarm_r', 'hand_r'],
+    legL: ['thigh_l', 'calf_l', 'foot_l', 'ball_l'],
+    legR: ['thigh_r', 'calf_r', 'foot_r', 'ball_r'],
+    fingersThumbL: ['thumb_01_l', 'thumb_02_l', 'thumb_03_l', 'thumb_04_leaf_l'],
+    fingersThumbR: ['thumb_01_r', 'thumb_02_r', 'thumb_03_r', 'thumb_04_leaf_r'],
+    fingersIndexL: ['index_01_l', 'index_02_l', 'index_03_l', 'index_04_leaf_l'],
+    fingersIndexR: ['index_01_r', 'index_02_r', 'index_03_r', 'index_04_leaf_r'],
+    fingersMiddleL: ['middle_01_l', 'middle_02_l', 'middle_03_l', 'middle_04_leaf_l'],
+    fingersMiddleR: ['middle_01_r', 'middle_02_r', 'middle_03_r', 'middle_04_leaf_r'],
+    fingersRingL: ['ring_01_l', 'ring_02_l', 'ring_03_l', 'ring_04_leaf_l'],
+    fingersRingR: ['ring_01_r', 'ring_02_r', 'ring_03_r', 'ring_04_leaf_r'],
+    fingersPinkyL: ['pinky_01_l', 'pinky_02_l', 'pinky_03_l', 'pinky_04_leaf_l'],
+    fingersPinkyR: ['pinky_01_r', 'pinky_02_r', 'pinky_03_r', 'pinky_04_leaf_r']
   }
 
   public static readonly mixamo_config: Record<string, string[]> = {

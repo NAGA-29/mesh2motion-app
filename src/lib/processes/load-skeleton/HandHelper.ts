@@ -85,6 +85,6 @@ export class HandHelper {
   // they have the word 'tip' in the bone name
   private is_end_tip_bone (bone_name: string): boolean {
     // Look for bones that are finger tips - usually end with 'tip', 'end', or numbers like '3'
-    return bone_name.toLowerCase().includes('tip')
+    return bone_name.toLowerCase().includes('leaf')
   }
 }

@@ -11,99 +11,99 @@ export class MixamoMapper {
    */
   private static readonly BONE_MAP: Record<string, string> = {
     // Torso
-    'DEF-hips': 'mixamorigHips',
-    'DEF-spine001': 'mixamorigSpine',
-    'DEF-spine002': 'mixamorigSpine1',
-    'DEF-spine003': 'mixamorigSpine2',
-    'DEF-neck': 'mixamorigNeck',
-    'DEF-head': 'mixamorigHead',
-    'DEF-headtip': 'mixamorigHeadTop_End',
+    pelvis: 'mixamorigHips',
+    spine_01: 'mixamorigSpine',
+    spine_02: 'mixamorigSpine1',
+    spine_03: 'mixamorigSpine2',
+    neck_01: 'mixamorigNeck',
+    head: 'mixamorigHead',
+    head_leaf: 'mixamorigHeadTop_End',
 
     // Left Arm
-    'DEF-shoulderL': 'mixamorigLeftShoulder',
-    'DEF-upper_armL': 'mixamorigLeftArm',
-    'DEF-forearmL': 'mixamorigLeftForeArm',
-    'DEF-handL': 'mixamorigLeftHand',
+    clavicle_l: 'mixamorigLeftShoulder',
+    upperarm_l: 'mixamorigLeftArm',
+    lowerarm_l: 'mixamorigLeftForeArm',
+    hand_l: 'mixamorigLeftHand',
 
     // Right Arm
-    'DEF-shoulderR': 'mixamorigRightShoulder',
-    'DEF-upper_armR': 'mixamorigRightArm',
-    'DEF-forearmR': 'mixamorigRightForeArm',
-    'DEF-handR': 'mixamorigRightHand',
+    clavicle_r: 'mixamorigRightShoulder',
+    upperarm_r: 'mixamorigRightArm',
+    lowerarm_r: 'mixamorigRightForeArm',
+    hand_r: 'mixamorigRightHand',
 
     // Left Leg
-    'DEF-thighL': 'mixamorigLeftUpLeg',
-    'DEF-shinL': 'mixamorigLeftLeg',
-    'DEF-footL': 'mixamorigLeftFoot',
-    'DEF-toeL': 'mixamorigLeftToeBase',
-    'DEF-toe_tipL': 'mixamorigLeftToe_End',
+    thigh_l: 'mixamorigLeftUpLeg',
+    calf_l: 'mixamorigLeftLeg',
+    foot_l: 'mixamorigLeftFoot',
+    ball_l: 'mixamorigLeftToeBase',
+    ball_leaf_l: 'mixamorigLeftToe_End',
 
     // Right Leg
-    'DEF-thighR': 'mixamorigRightUpLeg',
-    'DEF-shinR': 'mixamorigRightLeg',
-    'DEF-footR': 'mixamorigRightFoot',
-    'DEF-toeR': 'mixamorigRightToeBase',
-    'DEF-toe_tipR': 'mixamorigRightToe_End',
+    thigh_r: 'mixamorigRightUpLeg',
+    calf_r: 'mixamorigRightLeg',
+    foot_r: 'mixamorigRightFoot',
+    ball_r: 'mixamorigRightToeBase',
+    ball_leaf_r: 'mixamorigRightToe_End',
 
     // Left Hand Fingers - Thumb
-    'DEF-thumb01L': 'mixamorigLeftHandThumb1',
-    'DEF-thumb02L': 'mixamorigLeftHandThumb2',
-    'DEF-thumb03L': 'mixamorigLeftHandThumb3',
-    'DEF-thumb_04_tipL': 'mixamorigLeftHandThumb4',
+    thumb_01_l: 'mixamorigLeftHandThumb1',
+    thumb_02_l: 'mixamorigLeftHandThumb2',
+    thumb_03_l: 'mixamorigLeftHandThumb3',
+    thumb_04_leaf_l: 'mixamorigLeftHandThumb4',
 
     // Left Hand Fingers - Index
-    'DEF-f_index01L': 'mixamorigLeftHandIndex1',
-    'DEF-f_index02L': 'mixamorigLeftHandIndex2',
-    'DEF-f_index03L': 'mixamorigLeftHandIndex3',
-    'DEF-f_index04_tipL': 'mixamorigLeftHandIndex4',
+    index_01_l: 'mixamorigLeftHandIndex1',
+    index_02_l: 'mixamorigLeftHandIndex2',
+    index_03_l: 'mixamorigLeftHandIndex3',
+    index_04_leaf_l: 'mixamorigLeftHandIndex4',
 
     // Left Hand Fingers - Middle
-    'DEF-f_middle01L': 'mixamorigLeftHandMiddle1',
-    'DEF-f_middle02L': 'mixamorigLeftHandMiddle2',
-    'DEF-f_middle03L': 'mixamorigLeftHandMiddle3',
-    'DEF-f_middle04_tipL': 'mixamorigLeftHandMiddle4',
+    middle_01_l: 'mixamorigLeftHandMiddle1',
+    middle_02_l: 'mixamorigLeftHandMiddle2',
+    middle_03_l: 'mixamorigLeftHandMiddle3',
+    middle_04_leaf_l: 'mixamorigLeftHandMiddle4',
 
     // Left Hand Fingers - Ring
-    'DEF-f_ring01L': 'mixamorigLeftHandRing1',
-    'DEF-f_ring02L': 'mixamorigLeftHandRing2',
-    'DEF-f_ring03L': 'mixamorigLeftHandRing3',
-    'DEF-f_ring04_tipL': 'mixamorigLeftHandRing4',
+    ring_01_l: 'mixamorigLeftHandRing1',
+    ring_02_l: 'mixamorigLeftHandRing2',
+    ring_03_l: 'mixamorigLeftHandRing3',
+    ring_04_leaf_l: 'mixamorigLeftHandRing4',
 
     // Left Hand Fingers - Pinky
-    'DEF-f_pinky01L': 'mixamorigLeftHandPinky1',
-    'DEF-f_pinky02L': 'mixamorigLeftHandPinky2',
-    'DEF-f_pinky03L': 'mixamorigLeftHandPinky3',
-    'DEF-f_pinky04_tipL': 'mixamorigLeftHandPinky4',
+    pinky_01_l: 'mixamorigLeftHandPinky1',
+    pinky_02_l: 'mixamorigLeftHandPinky2',
+    pinky_03_l: 'mixamorigLeftHandPinky3',
+    pinky_04_leaf_l: 'mixamorigLeftHandPinky4',
 
     // Right Hand Fingers - Thumb
-    'DEF-thumb01R': 'mixamorigRightHandThumb1',
-    'DEF-thumb02R': 'mixamorigRightHandThumb2',
-    'DEF-thumb03R': 'mixamorigRightHandThumb3',
-    'DEF-thumb04_tipR': 'mixamorigRightHandThumb4',
+    thumb_01_r: 'mixamorigRightHandThumb1',
+    thumb_02_r: 'mixamorigRightHandThumb2',
+    thumb_03_r: 'mixamorigRightHandThumb3',
+    thumb_04_leaf_r: 'mixamorigRightHandThumb4',
 
     // Right Hand Fingers - Index
-    'DEF-f_index01R': 'mixamorigRightHandIndex1',
-    'DEF-f_index02R': 'mixamorigRightHandIndex2',
-    'DEF-f_index03R': 'mixamorigRightHandIndex3',
-    'DEF-f_index04_tipR': 'mixamorigRightHandIndex4',
+    index_01_r: 'mixamorigRightHandIndex1',
+    index_02_r: 'mixamorigRightHandIndex2',
+    index_03_r: 'mixamorigRightHandIndex3',
+    index_04_leaf_r: 'mixamorigRightHandIndex4',
 
     // Right Hand Fingers - Middle
-    'DEF-f_middle01R': 'mixamorigRightHandMiddle1',
-    'DEF-f_middle02R': 'mixamorigRightHandMiddle2',
-    'DEF-f_middle03R': 'mixamorigRightHandMiddle3',
-    'DEF-f_middle04_tipR': 'mixamorigRightHandMiddle4',
+    middle_01_r: 'mixamorigRightHandMiddle1',
+    middle_02_r: 'mixamorigRightHandMiddle2',
+    middle_03_r: 'mixamorigRightHandMiddle3',
+    middle_04_leaf_r: 'mixamorigRightHandMiddle4',
 
     // Right Hand Fingers - Ring
-    'DEF-f_ring01R': 'mixamorigRightHandRing1',
-    'DEF-f_ring02R': 'mixamorigRightHandRing2',
-    'DEF-f_ring03R': 'mixamorigRightHandRing3',
-    'DEF-f_ring04_tipR': 'mixamorigRightHandRing4',
+    ring_01_r: 'mixamorigRightHandRing1',
+    ring_02_r: 'mixamorigRightHandRing2',
+    ring_03_r: 'mixamorigRightHandRing3',
+    ring_04_leaf_r: 'mixamorigRightHandRing4',
 
     // Right Hand Fingers - Pinky
-    'DEF-f_pinky01R': 'mixamorigRightHandPinky1',
-    'DEF-f_pinky02R': 'mixamorigRightHandPinky2',
-    'DEF-f_pinky03R': 'mixamorigRightHandPinky3',
-    'DEF-f_pinky04_tipR': 'mixamorigRightHandPinky4'
+    pinky_01_r: 'mixamorigRightHandPinky1',
+    pinky_02_r: 'mixamorigRightHandPinky2',
+    pinky_03_r: 'mixamorigRightHandPinky3',
+    pinky_04_leaf_r: 'mixamorigRightHandPinky4'
   }
 
   /**
@@ -128,13 +128,13 @@ export class MixamoMapper {
 
     // For each source bone (Mesh2Motion), find matching target bone (Mixamo)
     for (const source_bone of source_bones) {
-      const expected_mixamo_name = this.BONE_MAP[source_bone.name]
+      const expected_mixamo_name: string | undefined = this.BONE_MAP[source_bone.name]
 
-      if (expected_mixamo_name) {
+      if (expected_mixamo_name !== undefined) {
         // Find target bone with this Mixamo name
-        const target_bone = target_bones.find(tb => tb.name === expected_mixamo_name)
+        const target_bone: BoneMetadata | undefined = target_bones.find(tb => tb.name === expected_mixamo_name)
 
-        if (target_bone) {
+        if (target_bone !== undefined) {
           mappings.set(target_bone.name, source_bone.name)
           // console.log(`Mapped: ${target_bone.name} -> ${source_bone.name}`)
         }

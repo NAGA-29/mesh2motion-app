@@ -252,7 +252,7 @@ export class BoneAutoMapper {
    */
   private static detect_bone_category (normalized_name: string): BoneCategory {
     if (normalized_name.includes('spine') || normalized_name.includes('chest') || normalized_name.includes('neck') ||
-      normalized_name.includes('head') || normalized_name.includes('hips')) {
+      normalized_name.includes('head') || normalized_name.includes('hips') || normalized_name.includes('pelvis')) {
       return BoneCategory.Torso
     }
 

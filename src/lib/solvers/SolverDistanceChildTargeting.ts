@@ -248,7 +248,10 @@ export default class SolverDistanceChildTargeting extends AbstractAutoSkinSolver
   // every vertex checks to see if it is below the hips area,
   // so do this calculation once and cache it for the lookup later
   private calculate_distance_to_bottom_of_hip (): number {
-    const hip_bone_object: Bone | undefined = this.get_bone_master_data().find(b => b.name.toLowerCase().includes('hips'))
+    const hip_bone_object: Bone | undefined = this.get_bone_master_data().find(b => {
+      const name = b.name.toLowerCase()
+      return name.includes('hips') || name.includes('pelvis')
+    })
     if (hip_bone_object === undefined) {
       throw new Error('Hip bone not found')
     }
@@ -285,7 +288,8 @@ export default class SolverDistanceChildTargeting extends AbstractAutoSkinSolver
 
         // hip bones should have custom logic for distance. If the distance is too far away we should ignore it
         // This will help with hips when left/right legs could be closer than knee bones
-        if (this.skeleton_type === SkeletonType.Human && bone.name.includes('hips')) {
+        if (this.skeleton_type === SkeletonType.Human &&
+          (bone.name.includes('hips') || bone.name.includes('pelvis'))) {
           // if the intersection point is lower than the vertex position, that means the vertex is below
           // the hips area, and is part of the left or right leg...ignore that result
           if (this.distance_to_bottom_of_hip !== null && this.distance_to_bottom_of_hip < vertex_position.y) {

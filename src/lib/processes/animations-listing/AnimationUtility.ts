@@ -46,12 +46,13 @@ export class AnimationUtility {
         rotation_tracks = animation_clip.tracks
           .filter((x: KeyframeTrack) => x.name.includes('quaternion') ||
           x.name.toLowerCase().includes('hips.position') ||
+          x.name.toLowerCase().includes('pelvis.position') ||
           x.name.toLowerCase().includes('root.position'))
-          console.log('Preserving root position for clip: ' + animation_clip.name)
       } else {
         rotation_tracks = animation_clip.tracks
           .filter((x: KeyframeTrack) => x.name.includes('quaternion') ||
-          x.name.toLowerCase().includes('hips.position'))
+          x.name.toLowerCase().includes('hips.position') ||
+          x.name.toLowerCase().includes('pelvis.position'))
       }
 
       animation_clip.tracks = rotation_tracks // update track data
@@ -217,6 +218,7 @@ export class AnimationUtility {
         if (track.name.includes('quaternion')) {
           const is_center_bone = track_name_lower.includes('spine') ||
                                 track_name_lower.includes('hips') ||
+                                track_name_lower.includes('pelvis') ||
                                 track_name_lower.includes('neck') ||
                                 track_name_lower.includes('head') ||
                                 track_name_lower.includes('torso') ||
@@ -264,7 +266,8 @@ export class AnimationUtility {
         const track_name_lower = track.name.toLowerCase()
 
         // Handle position tracks specifically for hips
-        if (track.name.includes('position') && track_name_lower.includes('hips')) {
+        if (track.name.includes('position') &&
+        (track_name_lower.includes('hips') || track_name_lower.includes('pelvis'))) {
           const values = track.values
           const units_in_position = 3 // x, y, z
 
