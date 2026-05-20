@@ -1,5 +1,5 @@
 import { SkeletonType } from './enums/SkeletonType'
-import { humanVariations, foxVariations, birdVariations, kaijuVariations, fishVariations } from './ModelVariations'
+import { humanVariations, foxVariations, birdVariations, kaijuVariations, fishVariations, ModelVariation } from './RigModelVariations'
 
 export interface RigConfigEntry {
   skeleton_type: SkeletonType // The SkeletonType enum member for this rig
@@ -12,15 +12,6 @@ export interface RigConfigEntry {
   // we only have one bone per rig that we allow position keyframes (besides root)
   position_tracking_bone_name: string 
   model_variations?: ModelVariation[] // similar models (human, zombie, etc)
-}
-
-export interface ModelVariation {
-  model_file: string // Model file path relative to the static root, e.g. 'models/model-human-a-pose.glb'
-  display_name: string // Display name shown in the model dropdown, e.g. 'Human (A-Pose)'
-  attribution: string // Free-form attribution text to be shown in the UI when this model variation is selected, e.g. 'Model by Artist Name'
-  preview_image: string // Preview image path relative to the static root, shown in the variation selection dialog
-  license: string // License string for this model variation, e.g. 'CC0', 'CC-SA 4.0'
-
 }
 
 /**

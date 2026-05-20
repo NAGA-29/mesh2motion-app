@@ -1,10 +1,17 @@
-import { ModelVariation } from './RigConfig'
-
 interface VariationSpec {
   variant: string
   displayName: string
   attribution?: string
   license?: string
+}
+
+export interface ModelVariation {
+  model_file: string // Model file path relative to the static root, e.g. 'models/model-human-a-pose.glb'
+  display_name: string // Display name shown in the model dropdown, e.g. 'Human (A-Pose)'
+  attribution: string // Free-form attribution text to be shown in the UI when this model variation is selected, e.g. 'Model by Artist Name'
+  preview_image: string // Preview image path relative to the static root, shown in the variation selection dialog
+  license: string // License string for this model variation, e.g. 'CC0', 'CC-SA 4.0'
+
 }
 
 function createVariation(type: string, spec: VariationSpec): ModelVariation {
