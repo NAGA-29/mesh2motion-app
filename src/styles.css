@@ -57,6 +57,10 @@ body.light-theme img[src$=".png"] {
   filter: invert(0.7);
 }
 
+img.ignore-filters {
+    filter: none !important;
+}
+
 ul {
     padding: 0.5rem;
 }
@@ -755,4 +759,26 @@ input[type="file"] {
 .nav-icon {
     width: var(--navigation-icon-size);
     height: var(--navigation-icon-size);
+}
+
+
+/* Skeleton Template Image Styles */
+.skeleton-template-image-clickable {
+  position: relative;
+  transition: border 0.2s ease;
+  border: 2px solid transparent;
+  border-radius: 4px;
+}
+
+.skeleton-template-image-clickable:hover {
+  border: 2px solid var(--text-alternate);
+}
+
+.skeleton-template-image-preview {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: rgb(0 0 0 / 26%);
+    border-radius: 4px;
+    padding: 6px;
 }

@@ -8,6 +8,7 @@ export interface RigConfigEntry {
   rig_display_name: string // Display name shown in both the model and skeleton dropdowns
   animation_files: string[] // Animation filenames (no base path) loaded for this rig type
   animation_preview_folder: string // Sub-folder name used when referencing animation preview thumbnails
+  skeleton_template_image_url: string // URL for the skeleton template image shown in the edit skeleton step
   // The bone used for position tracking (e.g., 'hips' or 'head').
   // we only have one bone per rig that we allow position keyframes (besides root)
   position_tracking_bone_name: string 
@@ -30,6 +31,7 @@ export class RigConfig {
       animation_files: ['../animations/human-base-animations.glb', '../animations/human-addon-animations.glb'],
       animation_preview_folder: 'human',
       position_tracking_bone_name: 'pelvis',
+      skeleton_template_image_url: 'rigs/reference/human.png',
       model_variations: humanVariations
     } satisfies RigConfigEntry,
     {
@@ -40,6 +42,7 @@ export class RigConfig {
       animation_files: ['../animations/fox-animations.glb'],
       animation_preview_folder: 'fox',
       position_tracking_bone_name: 'hips',
+      skeleton_template_image_url: 'rigs/reference/fox.png',
       model_variations: foxVariations
     } satisfies RigConfigEntry,
     {
@@ -50,6 +53,7 @@ export class RigConfig {
       animation_files: ['../animations/bird-animations.glb'],
       animation_preview_folder: 'bird',
       position_tracking_bone_name: 'hips',
+      skeleton_template_image_url: 'rigs/reference/bird.png',
       model_variations: birdVariations
     } satisfies RigConfigEntry,
     {
@@ -60,6 +64,7 @@ export class RigConfig {
       animation_files: ['../animations/dragon-animations.glb'],
       animation_preview_folder: 'dragon',
       position_tracking_bone_name: 'hips',
+      skeleton_template_image_url: 'rigs/reference/dragon.png',
     } satisfies RigConfigEntry,
     {
       skeleton_type: SkeletonType.Kaiju,
@@ -69,6 +74,7 @@ export class RigConfig {
       animation_files: ['../animations/kaiju-animations.glb'],
       animation_preview_folder: 'kaiju',
       position_tracking_bone_name: 'hips',
+      skeleton_template_image_url: 'rigs/reference/kaiju.png',
       model_variations: kaijuVariations
     } satisfies RigConfigEntry,
     {
@@ -79,6 +85,7 @@ export class RigConfig {
       animation_files: ['../animations/spider-animations.glb'],
       animation_preview_folder: 'spider',
       position_tracking_bone_name: 'hips',
+      skeleton_template_image_url: 'rigs/reference/spider.png',
     } satisfies RigConfigEntry,
     {
       skeleton_type: SkeletonType.Snake,
@@ -88,6 +95,7 @@ export class RigConfig {
       animation_files: ['../animations/snake-animations.glb'],
       animation_preview_folder: 'snake',
       position_tracking_bone_name: 'head', // snake doesn't have hips, so we track position from the head instead
+      skeleton_template_image_url: 'rigs/reference/snake.png',
     } satisfies RigConfigEntry,
     {
       skeleton_type: SkeletonType.Fish,
@@ -97,6 +105,7 @@ export class RigConfig {
       animation_files: ['../animations/shark-animations.glb'],
       animation_preview_folder: 'shark',
       position_tracking_bone_name: 'pelvis',
+      skeleton_template_image_url: 'rigs/reference/shark.png',
       model_variations: fishVariations
     } satisfies RigConfigEntry
   ]

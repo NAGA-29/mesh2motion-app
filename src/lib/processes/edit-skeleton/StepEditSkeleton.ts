@@ -4,6 +4,7 @@ import { Utility } from '../../Utilities.ts'
 import { UndoRedoSystem } from './UndoRedoSystem.ts'
 import { PreviewPlaneManager } from './PreviewPlaneManager.ts'
 import { IndependentBoneMovement } from './IndependentBoneMovement.ts'
+import { ModalDialog } from '../../ModalDialog.ts'
 import {
   Vector3,
   Euler,
@@ -57,6 +58,10 @@ export class StepEditSkeleton extends EventTarget {
   private _added_event_listeners: boolean = false
   private readonly preview_plane_manager: PreviewPlaneManager = PreviewPlaneManager.getInstance()
   public readonly independent_bone_movement: IndependentBoneMovement = new IndependentBoneMovement()
+
+  // UI elements specific for this area
+  private _current_skeleton_type: SkeletonType | null = null
+  private dom_template_image: HTMLElement | null = null
 
   constructor () {
     super()
@@ -112,14 +117,45 @@ export class StepEditSkeleton extends EventTarget {
       }
     }
 
+    this.update_skeleton_template_image(skeleton_type)
+
     // show/hide settings for the head correct depending on if it is checked
     this.show_preview_plane_options()
+  }
+
+  private update_skeleton_template_image(skeleton_type: SkeletonType): void {
+    // figure out where the template image URL is at from the Rig Config
+    const rig_config_entry = RigConfig.all.find(entry => entry.skeleton_type === skeleton_type)
+
+    // update DOM element background image
+    this.dom_template_image = document.getElementById('skeleton-template-image')
+    if (this.dom_template_image !== null && rig_config_entry !== undefined) {
+      this.dom_template_image.style.width = '250px'
+      this.dom_template_image.style.height = '220px'
+      this.dom_template_image.style.backgroundImage = `url(${ rig_config_entry.skeleton_template_image_url  })`
+      this.dom_template_image.style.backgroundSize = 'contain'
+      this.dom_template_image.style.backgroundRepeat = 'no-repeat'
+      this.dom_template_image.style.backgroundPosition = 'center'
+      this.dom_template_image.style.cursor = 'pointer'
+
+      // Remove existing click handler to avoid duplicates
+      this.dom_template_image.onclick = null
+
+      // Add click handler to open larger image in dialog
+      this.dom_template_image.onclick = () => {
+        const dialog = new ModalDialog(
+          'Rig Template',
+          `<img class="ignore-filters" src="${rig_config_entry.skeleton_template_image_url}" style="max-width: 100%; height: auto; border-radius: 8px;">`
+        )
+        dialog.show()
+      }
+    }
   }
 
   public begin (main_scene: Scene, skeleton_type: SkeletonType): void {
     this.update_ui_options_on_begin(skeleton_type)
 
-    // show UI elemnents for editing mesh
+    // show UI elements for editing mesh
 
     if (this.ui.dom_current_step_element != null) {
       this.ui.dom_current_step_element.innerHTML = 'Position Joints'
