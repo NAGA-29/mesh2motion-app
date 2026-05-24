@@ -8,7 +8,6 @@ import { RetargetAnimationListing } from './RetargetAnimationListing.ts'
 import { AnimationRetargetService } from './AnimationRetargetService'
 import { type SkeletonType } from '../lib/enums/SkeletonType.ts'
 import { RetargetUtils } from './RetargetUtils.ts'
-import { UI } from '../lib/UI.ts'
 
 class RetargetModule {
   private readonly mesh2motion_engine: Mesh2MotionEngine
@@ -20,7 +19,6 @@ class RetargetModule {
 
   private back_to_bone_map_button: HTMLButtonElement | null = null
   private continue_to_listing_button: HTMLButtonElement | null = null
-  private readonly ui: UI = UI.getInstance()
 
   constructor () {
     // Set up camera position similar to marketing bootstrap

@@ -14,7 +14,19 @@ interface SettingsDefaultsConfig {
   solid_background_enabled: boolean
 }
 
+interface TopNavLinksConfig {
+  support_href: string
+  github_href: string
+  github_icon_src: string
+}
+
 export class DOMUtilities {
+  static readonly top_nav_links: TopNavLinksConfig = {
+    support_href: 'https://support.mesh2motion.org',
+    github_href: 'https://github.com/scottpetrovic/mesh2motion-app',
+    github_icon_src: '../images/github-white-icon.png'
+  }
+
   static readonly settings_defaults: SettingsDefaultsConfig = {
     light_intensity: {
       min: '0.1',
@@ -33,10 +45,92 @@ export class DOMUtilities {
   }
 
   /**
+   * Render shared top-right navigation links into the provided mount element.
+   */
+  static populate_top_nav_links (mount: HTMLElement): void {
+    const nav_links = DOMUtilities.top_nav_links
+
+    // Keep mount behavior consistent with original inline nav structure.
+    mount.style.display = 'inline-flex'
+    mount.style.alignItems = 'center'
+
+    mount.innerHTML = `
+      <a href="#" id="learn-link">Learn</a>
+      <a href="#" id="attribution-link">Contributors</a>
+      <a href="${nav_links.support_href}" target="_blank">💗</a>
+      <a href="${nav_links.github_href}" target="_blank">
+        <img src="${nav_links.github_icon_src}" width="24" height="24" alt="GitHub" />
+      </a>
+      <span id="settings-dropdown-mount"></span>
+    `
+  }
+
+  /**
+   * Render shared viewport mouse control hints into the provided mount element.
+   */
+  static populate_header_controls (mount: HTMLElement): void {
+    mount.innerHTML = `
+      <div id="header-ui">
+        <div>
+          <img class="nav-icon" src="/images/mouse-left.svg" style="vertical-align: middle" />
+          Rotate
+        </div>
+
+        <div>
+          <img class="nav-icon" src="/images/mouse-right.svg" style="vertical-align: middle" />
+          Pan
+        </div>
+
+        <div>
+          <img class="nav-icon" src="/images/mouse-middle.svg" style="vertical-align: middle" />
+          Zoom
+        </div>
+      </div>
+    `
+  }
+
+  /**
+   * Render shared animation player controls into the provided mount element.
+   */
+  static populate_animation_player (mount: HTMLElement): void {
+    mount.innerHTML = `
+      <div id="animation-player">
+        <div id="current-animation-container">
+          <span id="current-animation-name">No animation selected</span>
+        </div>
+
+        <div id="play-controls">
+          <button id="play-pause-button" class="animation-control-button" disabled>
+            <span class="material-symbols-outlined">play_arrow</span>
+          </button>
+
+          <span>
+            <span id="current-time">0f</span> /
+            <span id="total-time">0f</span>
+          </span>
+
+          <input type="range" id="animation-scrubber" min="0" max="100" value="0" disabled />
+
+          <div id="skeleton-toggle" class="styled-checkbox icon-toggle">
+            <input type="checkbox" id="show-skeleton-checkbox" name="show-skeleton" value="show" style="display: none" />
+            <label for="show-skeleton-checkbox" data-tippy-content="Show skeleton" tabindex="0" style="border-radius: 0">
+              <img src="../images/icons/bone-display.svg" class="action-icon" alt="Show skeleton" style="user-select: none" />
+            </label>
+          </div>
+        </div>
+      </div>
+    `
+  }
+
+  /**
    * Render shared nav settings dropdown markup into the provided mount element.
    */
   static populate_settings_dropdown (mount: HTMLElement): void {
     const defaults = DOMUtilities.settings_defaults
+
+    // Nested settings mount should not introduce block-flow wrapping.
+    mount.style.display = 'inline-flex'
+    mount.style.alignItems = 'center'
 
     mount.innerHTML = `
       <div id="settings-dropdown-container" class="nav-dropdown">

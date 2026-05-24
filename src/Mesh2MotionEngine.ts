@@ -82,10 +82,7 @@ export class Mesh2MotionEngine {
   private readonly camera_shake: CameraShake
 
   constructor () {
-    const settings_dropdown_mount = document.querySelector('#settings-dropdown-mount')
-    if (settings_dropdown_mount instanceof HTMLElement) {
-      DOMUtilities.populate_settings_dropdown(settings_dropdown_mount)
-    }
+    this.initialize_shared_dom_mounts()
 
     this.eventListeners = new EventListeners(this)
     // helps resolve requestAnimationFrame calling animate() with wrong context
@@ -665,4 +662,33 @@ export class Mesh2MotionEngine {
   public show_learning_resources_dialog (): void {
     new ModalDialog('Learning Resources', Generators.get_learning_resources_html()).show()
   }
+
+
+  /**
+   * Populate shared HTML fragments that are reused across app pages.
+   * This runs before UI/Theme initialization so expected DOM IDs exist
+   * when singleton classes bind their element references and listeners.
+   */
+  private initialize_shared_dom_mounts (): void {
+    const top_nav_links_mount = document.querySelector('#top-nav-links-mount')
+    if (top_nav_links_mount instanceof HTMLElement) {
+      DOMUtilities.populate_top_nav_links(top_nav_links_mount)
+    }
+
+    const header_ui_mount = document.querySelector('#header-ui-mount')
+    if (header_ui_mount instanceof HTMLElement) {
+      DOMUtilities.populate_header_controls(header_ui_mount)
+    }
+
+    const animation_player_mount = document.querySelector('#animation-player-mount')
+    if (animation_player_mount instanceof HTMLElement) {
+      DOMUtilities.populate_animation_player(animation_player_mount)
+    }
+
+    const settings_dropdown_mount = document.querySelector('#settings-dropdown-mount')
+    if (settings_dropdown_mount instanceof HTMLElement) {
+      DOMUtilities.populate_settings_dropdown(settings_dropdown_mount)
+    }
+  }
+
 } // end Mesh2Motion Engine

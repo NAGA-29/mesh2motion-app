@@ -28,14 +28,7 @@
         </div>
 
         <div style="display: inline-flex; align-items: center;">
-            <a href="#" id="learn-link">Learn</a>
-            <a href="#" id="attribution-link">Contributors</a>
-             <a href="https://support.mesh2motion.org" target="_blank">💗</a>
-            <a href="https://github.com/scottpetrovic/mesh2motion-app" target="_blank">
-                <img src="../images/github-white-icon.png" width="24" height="24" alt="GitHub" />
-            </a>
-
-            <div id="settings-dropdown-mount"></div>
+            <div id="top-nav-links-mount"></div>
         </div>
     </nav>
 
@@ -195,47 +188,10 @@
 
         </div>
 
-        <!-- Free-floating Animation Player -->
-        <div id="animation-player">
-            <div id="current-animation-container">
-                <span id="current-animation-name">No animation selected</span>
-            </div>
-            <div id="play-controls">
-                <button id="play-pause-button" class="animation-control-button" disabled>
-                    <span class="material-symbols-outlined">play_arrow</span>
-                </button>
-                <span>
-                    <span id="current-time">0f</span> / 
-                    <span id="total-time">0f</span>
-                </span>
-                <input type="range" id="animation-scrubber" min="0" max="100" value="0" disabled>
-
-                <!-- checkbox option to show skeleton -->
-                <div id="skeleton-toggle" class="styled-checkbox icon-toggle" >
-                    <input type="checkbox" id="show-skeleton-checkbox" name="show-skeleton" value="show" style="display:none;">
-                    <label for="show-skeleton-checkbox" data-tippy-content="Show skeleton"  tabindex="0" style="border-radius: 0">
-                        <img src="../images/icons/bone-display.svg" class="action-icon" alt="Show skeleton" style="user-select: none;" />
-                    </label>
-                </div>
-
-            </div>
-
-        </div>
+        <div id="animation-player-mount"></div>
 
 
-    <!-- Top toolbar with mouse controls -->
-    <div id="header-ui">
-        <div>
-            <img class="nav-icon" src="/images/mouse-left.svg" style="vertical-align: middle;"/> Rotate
-        </div>
-
-        <div>
-            <img class="nav-icon" src="/images/mouse-right.svg" style="vertical-align: middle;"/> Pan
-        </div>
-        <div>
-            <img class="nav-icon" src="/images/mouse-middle.svg" style="vertical-align: middle;"/> Zoom
-        </div>
-    </div>
+    <div id="header-ui-mount"></div>
 
 
         <!-- 3d view controls shown on bottom right. This helps with click events -->
