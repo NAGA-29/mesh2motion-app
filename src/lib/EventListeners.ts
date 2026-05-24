@@ -4,6 +4,7 @@ import { ProcessStep } from './enums/ProcessStep'
 import { TransformSpace } from './enums/TransformSpace'
 import { Utility } from './Utilities'
 import { ModelCleanupUtility } from './processes/load-model/ModelCleanupUtility'
+import { DownloadSuccessDialog } from './DownloadSuccessDialog'
 import { type Bone } from 'three'
 
 export class EventListeners {
@@ -203,6 +204,7 @@ export class EventListeners {
         'exported-model',
         this.bootstrap.download_settings
       )
+      new DownloadSuccessDialog().show()
     })
 
     // going back to edit skeleton step after skinning
