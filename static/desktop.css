@@ -12,3 +12,11 @@ a#logo-branding {
     pointer-events: none;
     text-decoration: none;
 }
+
+.download-success-section {
+    display: none !important;
+}
+
+.download-success-desktop {
+    display: block !important;
+}

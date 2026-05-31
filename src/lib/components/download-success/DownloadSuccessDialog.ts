@@ -33,8 +33,12 @@ export class DownloadSuccessDialog {
             Join Discord Server
           </a>
         </div>
-
       </div>
+
+      <div class="download-success-desktop">
+        <p>The animations have been saved to your Downloads folder</p>
+      </div>
+
       <button class="download-success-dialog-close secondary-button">Close</button>
     </div> 
   `

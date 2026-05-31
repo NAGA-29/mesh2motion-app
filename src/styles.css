@@ -833,3 +833,9 @@ input[type="file"] {
     border-radius: 4px;
     padding: 6px;
 }
+
+/* custom message for our desktop application since we will
+   be hiding most of the post-download stuff */
+.download-success-desktop {
+    display: none;
+}
