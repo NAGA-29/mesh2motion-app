@@ -29,7 +29,7 @@ export class PlatformManager {
     if (this.platform === Platform.Desktop) {
       const link = document.createElement('link');
       link.rel = 'stylesheet';
-      link.href = '/desktop.css';
+      link.href = './desktop.css';
       document.head.appendChild(link);
     }
 
