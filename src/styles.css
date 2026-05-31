@@ -310,7 +310,7 @@ button:disabled {
 
 .button-icon-group {
     display: flex;
-    align-items: end;
+    align-items: anchor-center;
     justify-content: center;
     column-gap: 6px;
 }

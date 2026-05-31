@@ -153,15 +153,15 @@
                         </div>
 
                         <button class="secondary-button" id="import-animations-button" data-tippy-content="Import GLB animations. Only Mesh2Motion rigs are supported at this time." aria-label="Import GLB animations. Only Mesh2Motion rigs are supported at this time.">
-                            <span class="material-symbols-outlined">upload</span>
+                            <img src="images/icons/upload.svg" alt="Upload" width="20" height="20" />
                         </button>
                         <input id="import-animations-input" type="file" accept=".glb" multiple style="display:none" />
 
                         <div class="download-combo">
                             <button id="export-button" data-tippy-content="Exporting will combine all animations into a single GLB file.">
                                 <span class="button-icon-group">
-                                    <span class="material-symbols-outlined">save_alt</span>
-                                    <span>Download <span id="animation-selection-count">0</span></span>
+                                   <img src="images/icons/download.svg" alt="Download" width="16" height="16" />
+                                   <span>Download <span id="animation-selection-count">0</span></span>
                                 </span>
                             </button>
 
@@ -176,7 +176,9 @@
                                     data-tippy-content="Download options"
                                     aria-label="Open download options"
                                 >
-                                    <span class="material-symbols-outlined">arrow_drop_down</span>
+
+                                <img src="images/icons/arrow-dropdown.svg" alt="dropdown" width="16" height="16" />
+
                                 </button>
 
                                 <div id="download-settings" class="download-settings-panel" role="dialog" aria-label="Download settings" hidden>

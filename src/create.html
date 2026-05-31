@@ -61,9 +61,9 @@
             data-tippy-content="GLB and FBX preferred. ZIP is for GLTF+BIN and textures separately. DAE+textures is also supported in ZIP format."
           >
             <span class="button-icon-group">
-              <span class="material-symbols-outlined">upload</span>
+              <img src="images/icons/upload.svg" alt="Upload" width="16" height="16" />
               <span>Upload</span>
-              <span class="material-symbols-outlined">help</span>
+              <img src="images/icons/help.svg" alt="Help" width="20" height="20" />
             </span>
           </label>
           <input
@@ -95,11 +95,10 @@
             />
             <label for="load-model-debug-checkbox">Debug</label>
 
-            <span
-              class="material-symbols-outlined"
+            <img 
               data-tippy-content="Replaces all materials with a 'normal' shader for debugging"
-              >help</span
-            >
+              src="images/icons/help.svg" alt="Help" width="20" height="20" />
+
           </div>
         </div>
 
@@ -149,7 +148,9 @@
           <div id="hand-skeleton-options" class="alternate-background-section">
             <span style="display: flex; gap: 1rem;">
               <span>Hand Options</span>
-              <span class="material-symbols-outlined" data-tippy-content="Variations on which finger bones you want to keep. Single Hand Bone removes all fingers and keeps only the hand bone.">help</span>
+
+              <img data-tippy-content="Variations on which finger bones you want to keep. Single Hand Bone removes all fingers and keeps only the hand bone." src="images/icons/help.svg" alt="Help" width="20" height="20" />
+
             </span>
             <select id="hand-skeleton-selection">
               <option value="all-fingers">All Fingers</option>
@@ -163,7 +164,9 @@
           <div id="scale-skeleton-controls" style="display: none; flex-direction: column;">
             <div style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 1rem;">
               <label style="display:inline-flex">Scale skeleton</label>
-              <span class="material-symbols-outlined" data-tippy-content="Adjust the overall scale of the skeleton">help</span>
+
+              <img data-tippy-content="Adjust the overall scale of the skeleton" src="images/icons/help.svg" alt="Help" width="20" height="20" />
+
               <button class="secondary-button" id="reset-skeleton-scale-button">
                 <img src="images/icons/reset.svg" alt="Reset Skeleton Scale" width="20" height="20" />
               </button>
@@ -280,7 +283,9 @@
             <div class="styled-checkbox">
               <input type="checkbox" id="preview-plane-checkbox" />
               <label for="preview-plane-checkbox">Use Head Weight Correction</label>
-              <span class="material-symbols-outlined" data-tippy-content="If you are having issues with the arms distorting your head (e.g. chibi characters), use a divider to help define the head area.">help</span>
+
+              <img data-tippy-content="If you are having issues with the arms distorting your head (e.g. chibi characters), use a divider to help define the head area." src="images/icons/help.svg" alt="Help" width="20" height="20" />
+
             </div>
             <div id="preview-plane-setting-container" style="display: flex; align-items: center; gap: 0.5rem;">
               <label for="preview-plane-height-input">Height:</label>
@@ -346,11 +351,10 @@
                 "
               >
                 <label style="display: inline-flex">Expand / Contract Arms</label>
-                <span
-                  class="material-symbols-outlined"
-                  data-tippy-content="Fine-tune arm spread across all animations for heavier or skinnier characters."
-                  >help</span
-                >
+
+
+                 <img src="../images/icons/help.svg" alt="Help" width="20" height="20"
+                  data-tippy-content="Fine-tune arm spread across all animations for heavier or skinnier characters." />
 
                 <button class="secondary-button" id="reset-arm-extension-button">
                   <img
@@ -427,7 +431,9 @@
                 data-tippy-content="Import GLB animations. Only Mesh2Motion rigs are supported at this time."
                 aria-label="Import GLB animations. Only Mesh2Motion rigs are supported at this time."
               >
-                <span class="material-symbols-outlined">upload</span>
+
+              <img src="images/icons/upload.svg" alt="Upload" width="16" height="16" />
+
               </button>
               <input
                 id="import-animations-input"
@@ -443,7 +449,8 @@
                   data-tippy-content="Exporting will combine all animations into a single GLB file."
                 >
                   <span class="button-icon-group">
-                    <span class="material-symbols-outlined">save_alt</span>
+                    <img src="images/icons/download.svg" alt="Download" width="16" height="16" />
+
                     <span
                       >Download
                       <span id="animation-selection-count">0</span></span
@@ -465,7 +472,7 @@
                     data-tippy-content="Download options"
                     aria-label="Open download options"
                   >
-                    <span class="material-symbols-outlined">arrow_drop_down</span>
+                    <img src="images/icons/arrow-dropdown.svg" alt="dropdown" width="16" height="16" />
                   </button>
 
                   <div
