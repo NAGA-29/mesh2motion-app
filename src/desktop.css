@@ -4,3 +4,9 @@
 {
     display: none;
 }
+
+/* this makes links not clickable */
+a#logo-branding {
+    pointer-events: none;
+    text-decoration: none;
+}

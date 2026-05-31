@@ -136,7 +136,7 @@ export class DOMUtilities {
       <div id="settings-dropdown-container" class="nav-dropdown">
         <button id="settings-toggle" class="nav-icon-button" aria-expanded="false" aria-controls="settings-dropdown-content" aria-haspopup="true" aria-label="Open settings">
           
-        <img src="images/icons/settings.svg" alt="Settings" width="30" height="30" />
+        <img src="/images/icons/settings.svg" alt="Settings" width="30" height="30" />
         
         </button>
 
