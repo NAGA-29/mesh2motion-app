@@ -1,0 +1,33 @@
+/* Styles applied when the browser has no network connection.
+   Target elements using: [data-network-status="offline"] .your-selector { ... } */
+
+[data-network-status="offline"] #logo-branding {
+  display: none;
+}
+
+/* --- Network status toast --- */
+
+#network-status-toast {
+  position: fixed;
+  top: 5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.25rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: #8ce077;
+  color: #0a4d4d;
+}
+
+#network-status-toast.network-toast-show {
+  opacity: 1;
+}
+
+#network-status-toast.network-toast-hide {
+  opacity: 0;
+}

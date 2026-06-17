@@ -38,6 +38,7 @@ import { SceneEnvironmentManager } from './lib/SceneEnvironmentManager.ts'
 import { CameraShake } from './lib/CameraShake.ts'
 import { DOMUtilities } from './lib/DOMUtilities.ts'
 import { PlatformManager } from './lib/PlatformManager.ts'
+import { NetworkStatusManager } from './lib/NetworkStatusManager.ts'
 
 export class Mesh2MotionEngine {
   public readonly camera = Generators.create_camera()
@@ -85,6 +86,7 @@ export class Mesh2MotionEngine {
 
     // this will add a platform CSS file if we are running our desktop app
     new PlatformManager().init();
+    new NetworkStatusManager();
 
     this.eventListeners = new EventListeners(this)
     // helps resolve requestAnimationFrame calling animate() with wrong context
